@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'Oi';
+  src: url('./Static/fonts/Oi-Roboto/Lato/Lato-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./Static/fonts/Oi-Roboto/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
+*{
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  color: black;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  font-size: 4rem;
+}
+h2 {
+  font-size: 1.5rem;
+}
+
+p, li, em, strong, span, a, button, input {
+  font-family: 'Lato', sans-serif;
+}

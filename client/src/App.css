@@ -1,0 +1,35 @@
+.App {
+    display: grid;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0 auto;
+    gap: 3vmin;
+    grid-template: auto 1fr auto / 1fr;
+    grid-template-areas:"App-header"
+                        "App-main"
+                        "App-footer";
+}
+
+.App-header.container {
+  grid-area: App-header;
+  background-color: yellow;
+}
+
+.App-main {
+  grid-area: App-main;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.App-footer.container {
+  grid-area: App-footer;
+  justify-content: center;
+  min-height: 50px;
+  background-color: yellow;
+}
+

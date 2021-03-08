@@ -1,0 +1,42 @@
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    width: fit-content;
+}
+
+.link img {
+    height: 90px;
+    width: auto;
+}
+
+.link {
+    list-style: none;
+    text-decoration: none;
+}
+
+.link:hover, .link h2:hover {
+    color: orangered;
+}
+
+.list {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    align-content: center;
+}
+.list .link {
+    margin: 0 20px;
+}
+
+@media only screen and (orientation: portrait) {
+    .link {
+      margin: 0 2px;
+    }
+
+    .list .link {
+        margin: 0 10px;
+    }
+   }

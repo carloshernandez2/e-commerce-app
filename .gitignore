@@ -5,12 +5,16 @@
 /.pnp
 .pnp.js
 .env
+package-lock.json
+/client/package-lock.json
+/client/node_modules
+/client/.vscode
 
 # testing
 /coverage
 
 # production
-/build
+/client/build
 
 # misc
 .DS_Store
