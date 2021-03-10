@@ -2,11 +2,12 @@ import React from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import './App.css';
 
-import Home from "./layers/Home/App/Home";
 import { Navbar } from "./app/Navbar/Navbar"
-import { Product } from "./layers/Home/App/Product"
+import AppProducts from "./layers/Home/App/AppProducts"
+import Carrito from "./layers/Carrito/App/Carrito";
 
 function App() {
+  
   return (
     <BrowserRouter>
       <div className="App">
@@ -15,13 +16,13 @@ function App() {
         </header>
         <main className="App-main">
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/products/:id" component={Product} />
-            <Redirect to="/"/>
+            <Route path="/products" component={AppProducts}/>
+            <Route path="/cart/:id?" component={Carrito}></Route>
+            <Redirect to="/products"/>
           </Switch>
         </main>
         <footer className="App-footer container">
-          <p>All rights reserved</p>
+          <p>Todos los derechos reservados</p>
         </footer>
       </div>
     </BrowserRouter>

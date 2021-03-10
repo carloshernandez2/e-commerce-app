@@ -30,6 +30,6 @@ h2 {
   font-size: 1.5rem;
 }
 
-p, li, em, strong, span, a, button, input {
+p, li, em, strong, span, a, button, input, div {
   font-family: 'Lato', sans-serif;
 }

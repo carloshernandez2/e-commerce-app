@@ -27,9 +27,19 @@
     height: 100%;
     align-content: center;
 }
+
 .list .link {
     margin: 0 20px;
 }
+
+.badge {
+    background-color: #f02020;
+    color: #ffffff;
+    border-radius: 50%;
+    padding: 0.2rem 0.7rem;
+    font-size: 1.4rem;
+    margin-left: 0.2rem;
+  }
 
 @media only screen and (orientation: portrait) {
     .link {

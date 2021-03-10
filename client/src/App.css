@@ -24,6 +24,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  height: 100%;
 }
 
 .App-footer.container {

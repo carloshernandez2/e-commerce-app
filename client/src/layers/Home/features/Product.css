@@ -8,6 +8,9 @@ li {
     margin-top: 1rem;
 }
 
+input,
+select,
+textarea,
 button {
     padding: 1rem;
     border-radius: 0.5rem;
@@ -15,10 +18,16 @@ button {
     font-size: 1rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+button {
     background-color: #f8f8f8;
     cursor: pointer;
 }
 
+input:hover,
+select:hover,
+textarea:hover,
 button:hover {
     border: 0.1rem #404040 solid;
 }
@@ -40,17 +49,43 @@ button.block {
     margin: 0 10px;
 }
 
-.imagen {
+.foco {
     flex: 2 1 31rem;
+}
+
+.min-30 {
+    min-width: 30rem;
 }
 
 img.grande {
     width: 100%;
 }
 
+img.pequeño {
+    max-width: 5rem;
+    width: 100%;
+}
+
 .exito {
     color: #20a020;
 }
+
 .error {
     color: #a02020;
+  }
+
+.alert {
+    padding: 1rem;
+    border: 0.1rem solid transparent;
+    border-radius: 0.5rem;
+}
+
+.alert-info {
+    color: #2020a0;
+    background-color: #e0e0ff;
+}
+
+.alert-danger {
+    color: #a02020;
+    background-color: #ffe0e0;
 }
