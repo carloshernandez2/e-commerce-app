@@ -29,7 +29,7 @@ function AppProducts() {
     if (status === 'loading') {
         content = (
         <div className="container centro">
-            <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
+            <div className="lds-ring-big"><div></div><div></div><div></div><div></div></div>
         </div>
         )
     } else if (status === 'succeeded') {

@@ -4,8 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
+var productRouter = require('./routes/productRouter');
+var userRouter = require('./routes/userRouter');
+var dotenv = require('dotenv');
+
+dotenv.config();
 
 var app = express();
 
@@ -15,7 +18,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -25,8 +28,8 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_a
   useCreateIndex: true,
 });
 
-app.use('/', indexRouter);
-app.use('/api', apiRouter);
+app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

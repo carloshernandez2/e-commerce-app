@@ -111,7 +111,7 @@ export function Product(props) {
                       onClick={addToCartHandler}
                       className="primary block"
                     >
-                      Add to Cart
+                      Añadir al carrito
                     </button>
                   </li>
                 </>

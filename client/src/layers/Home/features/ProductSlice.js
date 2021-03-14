@@ -12,8 +12,7 @@ const initialState = {
 export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
   let url = "/api/products";
   const response = await fetch(url);
-  const jsonResponse = await response.json();
-  const data = jsonResponse.products
+  const data = await response.json();
   if(!data.length) throw new Error('no products available');
   return data;
 })

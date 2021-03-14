@@ -1,0 +1,21 @@
+@import url("../../../Static/CSS/animation/loading-small.css");
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+.dropdown-content {
+    position: absolute;
+    display: none;
+    right: 0;
+    min-width: 12rem;
+    padding: 1.2rem 1rem;
+    z-index: 1;
+    background-color: yellow;
+    margin: 0;
+    margin-top: 0.1rem;
+    border-radius: 0.5rem;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}

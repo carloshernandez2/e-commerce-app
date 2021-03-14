@@ -14,11 +14,11 @@ export default function Carrito(props) {
 
     const dispatch = useDispatch();
 
-    const [error, setError] = useState(false);
-
     const product = useSelector(state => singleProductState(state, id));
     const cartItems = useSelector(carritoItems);
     const cart = useSelector(carritoState);
+
+    const [error, setError] = useState({});
 
     useEffect(() => {
         if (product) dispatch(carritoUpdated(product, qty));
@@ -26,8 +26,12 @@ export default function Carrito(props) {
 
     // elimina el alert de error cuando una cantidad es ingresada satisfactoriamente
     useEffect(() =>{
-        setError(false)
-    }, [cart])
+      let newError = error
+      for (let obj of cart) {
+        newError[obj.product] = false
+      }
+      setError(newError)
+    }, [cart, error])
 
     const removeFromCartHandler = (id) => {
         // delete action
@@ -35,7 +39,7 @@ export default function Carrito(props) {
     };
 
     const checkoutHandler = () => {
-        props.history.push('/signin?redirect=shipping');
+        props.history.push('/registro?redirect=compra');
     };
 
     return (
@@ -70,15 +74,15 @@ export default function Carrito(props) {
                                 dispatch(
                                     carritoUpdated(item, Number(e.target.value))
                                 )
-                                : setError(true)
+                                : setError({...error, [item.product]: true})
                             }
                             max={item.countInStock}
                             min="1"
                             required
                         />
                     </div>
-                    {error && <div>
-                    <MessageBox variant="danger">Verifica que la cantidad ingresada se encuentre disponible</MessageBox>
+                    {error[item.product] && <div>
+                    <MessageBox variant="danger">No deberias ingresar cantidades que no se encuentren disponibles</MessageBox>
                     </div>}
                     <div>${item.price}</div>
                     <div>

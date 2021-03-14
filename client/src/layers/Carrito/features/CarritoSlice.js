@@ -51,6 +51,13 @@ const carritoSlice = createSlice({
       })
       state.cartItems = state.body.length;
       localStorage.setItem('cartItems', JSON.stringify(state));
+    },
+    restoreCart(state, action) {
+      localStorage.removeItem('cartItems');
+      state.cartItems = 0
+      state.body = []
+      state.status = 'idle'
+      state.error = null
     }
   },
   extraReducers: {
@@ -79,6 +86,6 @@ export const productError = state => state.product.error;
 
 export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
 
-export const { carritoUpdated, deleteItem } = carritoSlice.actions
+export const { carritoUpdated, deleteItem, restoreCart } = carritoSlice.actions
 
 export default carritoSlice.reducer

@@ -6,6 +6,10 @@
     width: fit-content;
 }
 
+.nav {
+    height: 100%;
+}
+
 .link img {
     height: 90px;
     width: auto;
@@ -36,8 +40,8 @@
     background-color: #f02020;
     color: #ffffff;
     border-radius: 50%;
-    padding: 0.2rem 0.7rem;
-    font-size: 1.4rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.9rem;
     margin-left: 0.2rem;
   }
 

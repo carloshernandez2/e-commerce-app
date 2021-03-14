@@ -17,7 +17,6 @@ const data = {
   ],
   products: [
     {
-      _id: '1',
       name: 'Muffin de chocolate',
       category: 'Muffins',
       image: '/images/p1.jpg',
@@ -29,7 +28,6 @@ const data = {
       countInStock: 40
     },
     {
-      _id: '2',
       name: 'Tabla de Muffins de fruta',
       category: 'Muffins',
       image: '/images/p2.jpg',
@@ -41,7 +39,6 @@ const data = {
       countInStock: 0
     },
     {
-      _id: '3',
       name: 'Brownie con helado',
       category: 'Helados',
       image: '/images/p3.jpg',
@@ -53,7 +50,6 @@ const data = {
       countInStock: 40
     },
     {
-      _id: '4',
       name: 'Muffin de oreo',
       category: 'Muffins',
       image: '/images/p4.jpg',
@@ -65,7 +61,6 @@ const data = {
       countInStock: 40
     },
     {
-      _id: '5',
       name: 'Cono sencillo',
       category: 'Helados',
       image: '/images/p5.jpg',
@@ -77,7 +72,6 @@ const data = {
       countInStock: 40
     },
     {
-      _id: '6',
       name: 'Donas heladas',
       category: 'Helados',
       image: '/images/p6.jpg',
