@@ -1,7 +1,7 @@
 const data = require('../data.js');
 const expressAsyncHandler = require('express-async-handler');
 const User = require('../models/userModel.js');
-const generateToken = require('../utils.js');
+const { generateToken } = require('../utils.js');
 const bcrypt = require('bcryptjs');
 
 var express = require('express');

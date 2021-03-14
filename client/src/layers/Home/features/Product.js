@@ -8,13 +8,15 @@ import { singleProductState } from "./ProductSlice";
 
 import "./Product.css";
 import MessageBox from '../../Carrito/features/MessageBox';
+import { singleCarritoState } from '../../Carrito/features/CarritoSlice';
 
 export function Product(props) {
 
   const { id } = props.match.params
-  const [qty, setQty] = useState(1);
+  const cartItem = useSelector(state => singleCarritoState(state, id));
+  const product = useSelector(state => singleProductState(state, id));
+  const [qty, setQty] = useState((cartItem && cartItem.qty) || 1);
   const [error, setError] = useState(false);
-  const product = useSelector(state => singleProductState(state, id))
 
   if (!product) {
     return  <div className="container centro">

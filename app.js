@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var productRouter = require('./routes/productRouter');
 var userRouter = require('./routes/userRouter');
+var orderRouter = require('./routes/orderRouter');
 var dotenv = require('dotenv');
 
 dotenv.config();
@@ -30,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_a
 
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
