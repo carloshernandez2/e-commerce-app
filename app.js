@@ -8,6 +8,7 @@ var productRouter = require('./routes/productRouter');
 var userRouter = require('./routes/userRouter');
 var orderRouter = require('./routes/orderRouter');
 var dotenv = require('dotenv');
+var cors = require('cors');
 
 dotenv.config();
 
@@ -16,7 +17,12 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === 'production'? process.env.LOCALHOST : ["http://localhost:3000", "http://localhost:5000"], // <-- location of the react app were connecting to
+    credentials: true,
+  })
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
