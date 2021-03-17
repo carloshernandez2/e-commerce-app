@@ -29,10 +29,10 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_a
   useCreateIndex: true,
 });
 
-// app.use(express.static(path.join(__dirname, 'Client/build')))
+// app.use(express.static(path.join(__dirname, 'client/build')))
 if (process.env.NODE_ENV === 'production') {
   // only use in development
-  app.use(express.static(path.join(__dirname, 'Client/build')))
+  app.use(express.static(path.join(__dirname, 'client/build')))
 }
 
 app.use('/api/products', productRouter);
