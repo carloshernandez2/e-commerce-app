@@ -13,7 +13,7 @@ export const fetchProducts = createAsyncThunk('product/fetchProducts', async () 
   let url = "/api/products";
   const response = await fetch(url);
   const data = await response.json();
-  if(!data.length) throw new Error('no products available');
+  if(!response.ok) throw data.error;
   return data;
 })
 
@@ -36,7 +36,7 @@ const productSlice = createSlice({
     },
     [fetchProducts.rejected]: (state, action) => {
       state.status = 'failed'
-      state.error = action.error.message
+      state.error = action.error
     }
   }
 })
