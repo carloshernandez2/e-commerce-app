@@ -9,23 +9,64 @@ router.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    if (req.body.orderItems.length === 0) {
+    const newOrder = req.body.container;
+    if (newOrder.orderItems.length === 0) {
       res.status(400).send({ message: 'Cart is empty' });
     } else {
       const order = new Order({
-        orderItems: req.body.orderItems,
-        shippingAddress: req.body.shippingAddress,
-        paymentMethod: req.body.paymentMethod,
-        itemsPrice: req.body.itemsPrice,
-        shippingPrice: req.body.shippingPrice,
-        taxPrice: req.body.taxPrice,
-        totalPrice: req.body.totalPrice,
+        orderItems: newOrder.orderItems,
+        shippingAddress: newOrder.shippingAddress,
+        paymentMethod: newOrder.paymentMethod,
+        itemsPrice: newOrder.itemsPrice,
+        shippingPrice: newOrder.shippingPrice,
+        taxPrice: newOrder.taxPrice,
+        totalPrice: newOrder.totalPrice,
         user: req.user._id,
       });
       const createdOrder = await order.save();
       res
         .status(201)
         .send({ message: 'New Order Created', order: createdOrder });
+    }
+  })
+);
+
+router.get(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order && (`${req.user._id}` === `${order.user}`)) {
+      res.send(order);
+    } else {
+      res.status(404).send({ message: `Order Not Found` });
+    }
+  })
+);
+
+router.put(
+  '/:id/pay',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const order = await Order.findById(req.params.id);
+      const paymentResult = req.body.container
+      if (order) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentResult = {
+          id: paymentResult.id,
+          status: paymentResult.status,
+          update_time: paymentResult.update_time,
+          email_address: paymentResult.payer.email_address,
+        };
+        const updatedOrder = await order.save();
+        res.send(updatedOrder);
+      } else {
+        res.status(404).send({ message: 'Order Not Found', method: 'PUT' });
+      }
+    } catch(e) {
+      res.status(404).send({ message: e.message, method: 'PUT' });
     }
   })
 );

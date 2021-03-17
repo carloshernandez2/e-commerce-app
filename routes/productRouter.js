@@ -17,8 +17,12 @@ router.get(
   '/seed',
   expressAsyncHandler(async (req, res) => {
     // await Product.remove({});
-    const createdProducts = await Product.insertMany(data.products);
-    res.send({ createdProducts });
+    try{
+      const createdProducts = await Product.insertMany(data.products);
+      res.send({ createdProducts });
+    } catch(e) {
+      res.json({ message: e.message })
+    }
   })
 );
 

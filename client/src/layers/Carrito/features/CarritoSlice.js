@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState =  localStorage.getItem('cartItems')
                       ? JSON.parse(localStorage.getItem('cartItems'))
@@ -8,16 +8,6 @@ const initialState =  localStorage.getItem('cartItems')
                           paymentMethod: '',
                           status: 'idle',
                           error: null}
-
-
-export const fetchCarrito = createAsyncThunk('carrito/fetchCarrito', async () => {
-  let url = "/api/products";
-  const response = await fetch(url);
-  const jsonResponse = await response.json();
-  const data = jsonResponse.products
-  if(!data.length) throw new Error('no products available');
-  return data;
-})
 
 const carritoSlice = createSlice({
   name: 'carrito',
@@ -70,20 +60,6 @@ const carritoSlice = createSlice({
     metodoPago(state, action) {
       state.paymentMethod = action.payload
       localStorage.setItem('cartItems', JSON.stringify(state));
-    }
-  },
-  extraReducers: {
-    [fetchCarrito.pending]: (state, action) => {
-      state.status = 'loading'
-    },
-    [fetchCarrito.fulfilled]: (state, action) => {
-      state.status = 'succeeded'
-      // Add any fetched posts to the array
-      state.body = action.payload
-    },
-    [fetchCarrito.rejected]: (state, action) => {
-      state.status = 'failed'
-      state.error = action.error.message
     }
   }
 })

@@ -10,6 +10,7 @@ import SignIn from "./layers/SignIn/App/SignIn";
 import Register from "./layers/SignIn/App/Register";
 import Pago from './layers/Carrito/App/Pago';
 import PlaceOrder from './layers/PlaceOrder/App/PlaceOrder';
+import Order from './layers/PlaceOrder/App/Order';
 
 function App() {
   
@@ -25,6 +26,7 @@ function App() {
             <Route path="/registro" component={SignIn}></Route>
             <Route path="/inscripcion" component={Register}></Route>
             <Route path="/cart/:id?" component={Carrito}></Route>
+            <Route path="/order/:id" component={Order}></Route>
             <Route path="/compra" component={Compra}></Route>
             <Route path="/pago" component={Pago}></Route>
             <Route path="/placeorder" component={PlaceOrder}></Route>

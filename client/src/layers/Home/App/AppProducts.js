@@ -10,6 +10,7 @@ import { productStatus } from "../features/ProductSlice";
 import { productError } from "../features/ProductSlice";
 
 import "./AppProducts.css";
+import { resetOrder } from '../../PlaceOrder/features/OrderSlice';
 
 function AppProducts() {
 
@@ -22,6 +23,7 @@ function AppProducts() {
 
     useEffect(() => {
         dispatch(fetchProducts())
+        dispatch(resetOrder([]))
     }, [dispatch])
 
     let content;

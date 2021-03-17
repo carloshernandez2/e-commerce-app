@@ -29,9 +29,22 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_a
   useCreateIndex: true,
 });
 
+// app.use(express.static(path.join(__dirname, 'Client/build')))
+if (process.env.NODE_ENV === 'production') {
+  // only use in development
+  app.use(express.static(path.join(__dirname, 'Client/build')))
+}
+
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
+app.get('/api/config/paypal', (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Client/build/index.html'))
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
