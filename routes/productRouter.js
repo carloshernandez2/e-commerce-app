@@ -12,7 +12,7 @@ router.get(
       const products = await Product.find({});
       res.send(products);
     } catch(e) {
-      res.status(500).json({message: e.message})
+      res.status(500).json({error: e})
     }
   })
 );

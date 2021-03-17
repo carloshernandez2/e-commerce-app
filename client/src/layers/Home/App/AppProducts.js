@@ -41,7 +41,7 @@ function AppProducts() {
                     <div className="container centro">
                         {products.length? products.map((product) => (
                             <Home key={product._id} product={product} />
-                        )) : <MessageBox>{error}</MessageBox>}
+                        )) : <MessageBox>{error.message}</MessageBox>}
                     </div>
                 </Route>
                 <Route exact path="/products/:id" component={Product} />
@@ -51,7 +51,7 @@ function AppProducts() {
     } else if (status === 'failed') {
         content = (
         <div className="container centro">
-            <MessageBox variant="danger">{error}</MessageBox>
+            <MessageBox variant="danger">{error.message}</MessageBox>
         </div>
         )
     }
