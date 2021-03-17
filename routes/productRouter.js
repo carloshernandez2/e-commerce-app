@@ -8,8 +8,12 @@ var router = express.Router();
 router.get(
   '/',
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find({});
-    res.send(products);
+    try {
+      const products = await Product.find({});
+      res.send(products);
+    } catch(e) {
+      res.status(500).json({message: e.message})
+    }
   })
 );
 
