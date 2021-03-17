@@ -13,7 +13,7 @@ export const fetchProducts = createAsyncThunk('product/fetchProducts', async () 
   let url = "/api/products";
   const response = await fetch(url);
   const data = await response.json();
-  if(!response.ok) throw data.error;
+  if(!response.ok) throw data;
   return data;
 })
 
