@@ -43,7 +43,7 @@ app.get('/api/config/paypal', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Client/build/index.html'))
+  res.sendFile(path.join(__dirname, 'client/build/index.html'))
 })
 
 // catch 404 and forward to error handler
