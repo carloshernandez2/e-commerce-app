@@ -31,6 +31,8 @@ export default function OrderHistory(props) {
             <LoadingBox variant="big"/>
         ) : status === "failed" ? (
             <MessageBox variant="danger">{error.message}</MessageBox>
+        ) : status === "succeeded" && !orders.length ? (
+            <MessageBox>No orders were found</MessageBox>
         ) : (
         <table className="table">
             <thead>

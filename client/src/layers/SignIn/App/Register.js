@@ -53,6 +53,7 @@ export default function Register(props) {
             id="name"
             placeholder="Ingresa tu nombre"
             required
+            value={name}
             onChange={(e) => setName(e.target.value)}
             ></input>
         </div>
@@ -63,6 +64,7 @@ export default function Register(props) {
             id="email"
             placeholder="Ingresa tu correo"
             required
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             ></input>
         </div>
@@ -74,6 +76,7 @@ export default function Register(props) {
             placeholder="Ingresa la contraseña"
             minLength="8"
             required
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             ></input>
         </div>
@@ -84,6 +87,7 @@ export default function Register(props) {
             id="confirmPassword"
             placeholder="Confirma la contraseña"
             required
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             ></input>
         </div>

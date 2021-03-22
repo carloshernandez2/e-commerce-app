@@ -12,6 +12,7 @@ import Pago from './layers/Carrito/App/Pago';
 import PlaceOrder from './layers/PlaceOrder/App/PlaceOrder';
 import Order from './layers/PlaceOrder/App/Order';
 import OrderHistory from './layers/PlaceOrder/App/OrderHistory';
+import Profile from './layers/SignIn/App/Profile';
 
 function App() {
   
@@ -32,6 +33,7 @@ function App() {
             <Route path="/pago" component={Pago}></Route>
             <Route path="/placeorder" component={PlaceOrder}></Route>
             <Route path="/orderhistory" component={OrderHistory}></Route>
+            <Route path="/profile" component={Profile}></Route>
             <Redirect to="/products"/>
           </Switch>
         </main>

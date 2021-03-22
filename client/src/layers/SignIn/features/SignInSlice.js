@@ -8,26 +8,39 @@ const initialState = {
   error: null
 }
 
-export const fetchUser = createAsyncThunk('user/fetchUser', async (params) => {
-    const {email, password, name} = params;
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-                            email, 
-                            password,
-                            name: name || undefined
-                          })
-    };
-    const url = name? "/api/users/register" : "/api/users/signin"
-    const response = await fetch(url, requestOptions);
-    const data = await response.json();
-    if (!response.ok) {
-      const error = new Error(data.message)
-      error.name = response.status + '';
-      throw error  
-    } 
-    return data;
+export const fetchUser = createAsyncThunk('user/fetchUser', async (params, {getState}) => {
+
+  const {
+      user: { body },
+  } = getState();
+
+  const {userId, email, password, name} = params;
+
+  const url = userId? '/api/users/profile' : name? "/api/users/register" : "/api/users/signin";
+  const method = userId? 'PUT' : 'POST';
+  const headers = userId ? { 
+                              'Content-Type': 'application/json', 
+                              'Authorization': `Bearer ${body.token}`
+                            } : {'Content-Type': 'application/json'}
+
+  const requestOptions = {
+    method,
+    headers,
+    body: JSON.stringify({ 
+                          email, 
+                          password,
+                          name: name || undefined
+                        })
+  };
+
+  const response = await fetch(url, requestOptions);
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.message)
+    error.name = response.status + '';
+    throw error  
+  } 
+  return data;
 })
 
 const userSlice = createSlice({

@@ -30,6 +30,29 @@ export function Navbar() {
           <li>
             <Name user={user}/>
           </li>
+          {user && user.isAdmin && (
+            <li>
+              <div className="dropdown">
+                <Link to="#admin" className="link">
+                  Admin <i className="fa fa-caret-down"></i>
+                </Link>
+                <ul className="dropdown-content">
+                  <li>
+                    <Link to="/dashboard" className="link">Dashboard</Link>
+                  </li>
+                  <li>
+                    <Link to="/productlist" className="link">Products</Link>
+                  </li>
+                  <li>
+                    <Link to="/orderlist"className="link">Orders</Link>
+                  </li>
+                  <li>
+                    <Link to="/userlist"className="link">Users</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          )}
         </ul>
       </nav>
     </React.Fragment>
