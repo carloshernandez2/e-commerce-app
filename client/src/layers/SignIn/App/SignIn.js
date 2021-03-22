@@ -34,6 +34,12 @@ export default function SignIn(props) {
     dispatch(restoreState(null))
   }, [dispatch, email, password])
 
+  useEffect(() => {
+    return () => {
+        dispatch(restoreState(null));
+    }
+}, [dispatch])
+
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>

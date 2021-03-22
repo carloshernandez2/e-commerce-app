@@ -36,6 +36,12 @@ export default function Register(props) {
         dispatch(restoreState(null))
       }, [dispatch, email, password, name, confirmPassword])
 
+    useEffect(() => {
+        return () => {
+            dispatch(restoreState(null));
+        }
+    }, [dispatch])
+
     return (
     <div>
         <form className="form" onSubmit={submitHandler}>
