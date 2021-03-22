@@ -11,6 +11,7 @@ import { productError } from "../features/ProductSlice";
 
 import "./AppProducts.css";
 import { resetOrder } from '../../PlaceOrder/features/OrderSlice';
+import LoadingBox from '../../PlaceOrder/features/LoadingBox';
 
 function AppProducts() {
 
@@ -30,9 +31,7 @@ function AppProducts() {
 
     if (status === 'loading') {
         content = (
-        <div className="container centro">
-            <div className="lds-ring-big"><div></div><div></div><div></div><div></div></div>
-        </div>
+            <LoadingBox variant="big"/>
         )
     } else if (status === 'succeeded') {
         content = (

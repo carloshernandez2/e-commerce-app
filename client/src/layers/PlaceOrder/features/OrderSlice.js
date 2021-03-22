@@ -4,6 +4,9 @@ const initialState = {
   body: [],
   status: ['idle', 'idle'],
   error: {renderError: null, updateError: null},
+  orders: [],
+  ordersStatus: 'idle',
+  ordersError: null
 }
 
 export const fetchOrder = createAsyncThunk('order/fetchOrder', async (params, {getState}) => {
@@ -39,6 +42,31 @@ export const fetchOrder = createAsyncThunk('order/fetchOrder', async (params, {g
     return data;
 })
 
+export const listOrderMine = createAsyncThunk('order/listOrderMine', async (params, {getState}) => {
+    const {
+        user: { body },
+    } = getState();
+
+    if (!body) return [];
+
+    const requestOptions = {
+      method: 'GET',
+      headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${body.token}`
+        }
+    };
+
+    const response = await fetch('/api/orders/mine', requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message)
+      error.name = response.status + '';
+      throw error
+    }
+    return data;
+})
+
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -64,15 +92,33 @@ const orderSlice = createSlice({
       const renderError = action.error.stack === 'PUT'? null : action.error
       const updateError = action.error.stack === 'PUT'? action.error : null
       state.error = {renderError, updateError}
+    },
+    [listOrderMine.pending]: (state, action) => {
+      state.ordersStatus = 'loading'
+    },
+    [listOrderMine.fulfilled]: (state, action) => {
+      state.ordersStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.orders = action.payload
+    },
+    [listOrderMine.rejected]: (state, action) => {
+      state.ordersStatus = 'failed'
+      state.ordersError = action.error
     }
   }
 })
 
 export const orderState = state => state.order.body
 
+export const ordersState = state => state.order.orders
+
 export const orderStatus = state => state.order.status;
 
+export const ordersStatus = state => state.order.ordersStatus;
+
 export const orderError = state => state.order.error;
+
+export const ordersError = state => state.order.ordersError;
 
 export const singleOrderState = (state, id) => state.order.body.find((product) => product._id === id)
 

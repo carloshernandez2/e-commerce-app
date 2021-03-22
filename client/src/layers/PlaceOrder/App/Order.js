@@ -5,6 +5,7 @@ import MessageBox from '../../Carrito/features/MessageBox';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { userState } from '../../SignIn/features/SignInSlice';
 import { fetchOrder, orderError, orderState, orderStatus } from '../features/OrderSlice';
+import LoadingBox from '../features/LoadingBox';
 
 export default function Order(props) {
 
@@ -56,9 +57,7 @@ export default function Order(props) {
     }, [props.history, user]);
 
     return status[1] === "loading" ? (
-        <div className="container centro">
-            <div className="lds-ring-big"><div></div><div></div><div></div><div></div></div>
-        </div>
+        <LoadingBox variant="big"/>
     ) : status[1] === "failed" && error.renderError ? (
         <MessageBox variant="danger">{error.renderError.message}
         <a href={window.location.href} className="link"> intenta nuevamente</a></MessageBox>
@@ -172,9 +171,7 @@ export default function Order(props) {
                         {!order.isPaid && (
                             <li>
                             {!sdkReady ? (
-                                <div className="container centro">
-                                    <div className="lds-ring-small"><div></div><div></div><div></div><div></div></div>
-                                </div>
+                                <LoadingBox />
                             ) : (
                                 <>
                                 <PayPalButton

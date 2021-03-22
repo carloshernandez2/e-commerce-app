@@ -5,6 +5,7 @@ import { carritoItems, carritoState, compraState, paymentMethodState, restoreCar
 import CheckoutSteps from '../../Carrito/features/CheckoutSteps';
 import MessageBox from '../../Carrito/features/MessageBox';
 import { userState } from '../../SignIn/features/SignInSlice';
+import LoadingBox from '../features/LoadingBox';
 import { orderState, orderStatus, orderError, fetchOrder, resetOrder } from "../features/OrderSlice";
 
 export default function PlaceOrder(props) {
@@ -183,9 +184,7 @@ export default function PlaceOrder(props) {
               </li>
               {error.renderError && <MessageBox variant="danger">{error.renderError.message}</MessageBox>}
               {loading && (
-                <div className="container centro">
-                    <div className="lds-ring-small"><div></div><div></div><div></div><div></div></div>
-                </div>
+                <LoadingBox />
               )}
             </ul>
           </div>

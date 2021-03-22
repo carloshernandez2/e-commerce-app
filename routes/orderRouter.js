@@ -5,6 +5,15 @@ const { isAuth } = require('../utils.js');
 
 const router = express.Router();
 
+router.get(
+  '/mine',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const orders = await Order.find({ user: req.user._id });
+    res.send(orders);
+  })
+);
+
 router.post(
   '/',
   isAuth,

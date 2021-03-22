@@ -11,6 +11,7 @@ import Register from "./layers/SignIn/App/Register";
 import Pago from './layers/Carrito/App/Pago';
 import PlaceOrder from './layers/PlaceOrder/App/PlaceOrder';
 import Order from './layers/PlaceOrder/App/Order';
+import OrderHistory from './layers/PlaceOrder/App/OrderHistory';
 
 function App() {
   
@@ -30,6 +31,7 @@ function App() {
             <Route path="/compra" component={Compra}></Route>
             <Route path="/pago" component={Pago}></Route>
             <Route path="/placeorder" component={PlaceOrder}></Route>
+            <Route path="/orderhistory" component={OrderHistory}></Route>
             <Redirect to="/products"/>
           </Switch>
         </main>

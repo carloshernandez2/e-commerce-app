@@ -7,6 +7,7 @@ import './Name.css';
 import MessageBox from '../../Carrito/features/MessageBox';
 import { Link } from 'react-router-dom';
 import { restoreCart } from '../../Carrito/features/CarritoSlice';
+import LoadingBox from '../../PlaceOrder/features/LoadingBox';
 
 function Name(props) {
 
@@ -29,9 +30,12 @@ function Name(props) {
             </Link>
             <ul className="dropdown-content">
                 <li>
-                <Link to="#signout" onClick={signoutHandler} className="link">
-                    Sign Out
-                </Link>
+                    <Link to="/orderhistory" className="link">Historial</Link>
+                </li>
+                <li>
+                    <Link to="#signout" onClick={signoutHandler} className="link">
+                        Sign Out
+                    </Link>
                 </li>
             </ul>
         </div>
@@ -47,9 +51,7 @@ function Name(props) {
         content = user? main : register;
     } else if (status === 'loading') {
         content = (
-        <div className="container centro">
-            <div className="lds-ring-small"><div></div><div></div><div></div><div></div></div>
-        </div>
+            <LoadingBox />
         )
     } else if (status === 'succeeded') {
         content = main

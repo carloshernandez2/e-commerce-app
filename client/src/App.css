@@ -1,6 +1,6 @@
 .App {
     display: grid;
-    width: 100%;
+    max-width: 100vw;
     min-height: 100vh;
     margin: 0 auto;
     gap: 3vmin;
@@ -13,6 +13,7 @@
 .App-header.container {
   grid-area: App-header;
   background-color: yellow;
+  max-height: 21vh;
 }
 
 .App-main {
