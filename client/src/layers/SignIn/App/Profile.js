@@ -61,6 +61,8 @@ export default function Profile(props) {
                             placeholder="Ingresa nombre"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            required
+                            maxLength="20"
                             ></input>
                         </div>
                         <div>
@@ -71,6 +73,7 @@ export default function Profile(props) {
                             placeholder="Ingresa tu correo"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                             ></input>
                         </div>
                         <div>
@@ -81,6 +84,8 @@ export default function Profile(props) {
                             placeholder="Ingresa la nueva contraseña"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
+                            minLength="8"
                             ></input>
                         </div>
                         <div>
@@ -91,6 +96,7 @@ export default function Profile(props) {
                             placeholder="Confirma tu contraseña"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
                             ></input>
                         </div>
                         <div>

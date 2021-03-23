@@ -12,6 +12,7 @@ import { productError } from "../features/ProductSlice";
 import "./AppProducts.css";
 import { resetOrder } from '../../PlaceOrder/features/OrderSlice';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
+import ProductEdit from './ProductEdit';
 
 function AppProducts() {
 
@@ -44,6 +45,7 @@ function AppProducts() {
                     </div>
                 </Route>
                 <Route exact path="/products/:id" component={Product} />
+                <Route exact path="/products/:id/edit" component={ProductEdit} />
                 <Redirect to="/products"/>
             </Switch>
         )

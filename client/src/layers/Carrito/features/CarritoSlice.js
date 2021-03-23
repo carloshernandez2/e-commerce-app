@@ -74,12 +74,6 @@ export const carritoItems = state => state.carrito.cartItems
 
 export const paymentMethodState = state => state.carrito.paymentMethod 
 
-export const productStatus = state => state.product.status;
-
-export const productError = state => state.product.error;
-
-export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
-
 export const { carritoUpdated, deleteItem, restoreCart, guardarCompra, metodoPago } = carritoSlice.actions
 
 export default carritoSlice.reducer

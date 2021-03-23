@@ -1,4 +1,3 @@
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -7,6 +6,7 @@ var mongoose = require('mongoose');
 var productRouter = require('./routes/productRouter');
 var userRouter = require('./routes/userRouter');
 var orderRouter = require('./routes/orderRouter');
+var uploadRouter = require('./routes/uploadRouter');
 var dotenv = require('dotenv');
 var cors = require('cors');
 var errorhandler = require('errorhandler');
@@ -22,8 +22,8 @@ app.use(
   })
 );
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 
 mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_abuela', {
@@ -34,10 +34,11 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_a
 
 // app.use(express.static(path.join(__dirname, 'client/build')))
 if (process.env.NODE_ENV === 'production') {
-  // only use in development
+  // only use in production
   app.use(express.static(path.join(__dirname, 'client/build')))
 }
 
+app.use('/api/uploads', uploadRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
@@ -45,14 +46,11 @@ app.get('/api/config/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
 
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build/index.html'))
 })
-
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
 
 // error handler
 if (process.env.NODE_ENV === 'development') {

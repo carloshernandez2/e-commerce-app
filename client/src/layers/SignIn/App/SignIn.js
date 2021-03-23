@@ -55,7 +55,7 @@ export default function SignIn(props) {
           <input
             type="email"
             id="email"
-            placeholder="Enter email"
+            placeholder="Ingresa tu correo"
             value={email}
             required
             onChange={(e) => setEmail(e.target.value)}
@@ -66,7 +66,7 @@ export default function SignIn(props) {
           <input
             type="password"
             id="password"
-            placeholder="Enter password"
+            placeholder="Ingresa la contraseña"
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
