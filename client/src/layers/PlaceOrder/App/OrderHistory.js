@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import MessageBox from '../../Carrito/features/MessageBox';
 import { userState } from '../../SignIn/features/SignInSlice';
 import LoadingBox from '../features/LoadingBox';
-import { listOrderMine, ordersError, ordersState, ordersStatus } from '../features/OrderSlice';
+import { listOrderMine, ordersError, ordersState, ordersStatus, resetOrders } from '../features/OrderSlice';
 
 import './OrderHistory.css';
 
@@ -21,7 +21,8 @@ export default function OrderHistory(props) {
     }, [props.history, user])
 
     useEffect(() => {
-    dispatch(listOrderMine());
+        dispatch(listOrderMine({}));
+        return () => dispatch(resetOrders());
     }, [dispatch]);
 
     return (
@@ -32,7 +33,7 @@ export default function OrderHistory(props) {
         ) : status === "failed" ? (
             <MessageBox variant="danger">{error.message}</MessageBox>
         ) : status === "succeeded" && !orders.length ? (
-            <MessageBox>No orders were found</MessageBox>
+            <MessageBox>No se encontraron pedidos</MessageBox>
         ) : (
         <table className="table">
             <thead>

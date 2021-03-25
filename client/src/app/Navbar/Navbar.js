@@ -38,16 +38,16 @@ export function Navbar() {
                 </Link>
                 <ul className="dropdown-content">
                   <li>
-                    <Link to="/dashboard" className="link">Dashboard</Link>
+                    <Link to="/dashboard" className="link">Tablero</Link>
                   </li>
                   <li>
-                    <Link to="/productlist" className="link">Products</Link>
+                    <Link to="/productlist" className="link">Productos</Link>
                   </li>
                   <li>
-                    <Link to="/orderlist"className="link">Orders</Link>
+                    <Link to="/orderlist"className="link">Pedidos</Link>
                   </li>
                   <li>
-                    <Link to="/userlist"className="link">Users</Link>
+                    <Link to="/userlist"className="link">Usuarios</Link>
                   </li>
                 </ul>
               </div>

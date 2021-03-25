@@ -4,16 +4,18 @@ import { Link } from 'react-router-dom';
 import MessageBox from '../../Carrito/features/MessageBox';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { userState } from '../../SignIn/features/SignInSlice';
-import { fetchOrder, orderError, orderState, orderStatus } from '../features/OrderSlice';
+import { deleteUpdateOrder, fetchOrder, modifiedError, modifiedStatus, orderError, orderState, orderStatus, resetModified, resetOrder } from '../features/OrderSlice';
 import LoadingBox from '../features/LoadingBox';
 
 export default function Order(props) {
 
     const orderId = props.match.params.id;
-    const order = useSelector(orderState);
     const user = useSelector(userState);
+    const order = useSelector(orderState);
     const status = useSelector(orderStatus);
     const error = useSelector(orderError);
+    const updateStatus = useSelector(modifiedStatus);
+    const updateError = useSelector(modifiedError);
 
     const [sdkReady, setSdkReady] = useState(false);
 
@@ -50,11 +52,28 @@ export default function Order(props) {
         dispatch(fetchOrder({ order, paymentResult }));
     };
 
+    const deliverHandler = () => {
+        dispatch(deleteUpdateOrder({ updateId: order._id }));
+      };
+
     useEffect(() => {
         if (!user) {
             props.history.push('/placeorder');
         }
     }, [props.history, user]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(resetModified());
+            dispatch(resetOrder([]));
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (updateStatus === "succeeded") {
+            dispatch(fetchOrder({ orderId }));
+        }
+    }, [dispatch, orderId, updateStatus]);
 
     return status[1] === "loading" ? (
         <LoadingBox variant="big"/>
@@ -184,6 +203,21 @@ export default function Order(props) {
                                 )}
                                 </>
                             )}
+                            </li>
+                        )}
+                        {user.isAdmin && order.isPaid && !order.isDelivered && (
+                            <li>
+                            {updateStatus === "loading" && <LoadingBox />}
+                            {updateStatus === "failed" && (
+                                <MessageBox variant="danger">{updateError.message}</MessageBox>
+                            )}
+                            <button
+                                type="button"
+                                className="primary block"
+                                onClick={deliverHandler}
+                            >
+                                Marcar como Entregado
+                            </button>
                             </li>
                         )}
                     </ul>

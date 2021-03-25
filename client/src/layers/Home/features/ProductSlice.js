@@ -6,7 +6,10 @@ const initialState = {
   error: null,
   errorCreate: null,
   statusCreate: 'idle',
-  createdProduct : null
+  createdProduct : null,
+  errorDelete: null,
+  statusDelete: 'idle',
+  deletedProduct : null
 }
 
 export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
@@ -49,6 +52,37 @@ export const createProduct = createAsyncThunk('product/createProduct', async (pa
   return data;
 })
 
+export const deleteProduct = createAsyncThunk('product/deleteProduct', async (params, {getState}) => {
+
+  const {
+      user: { body },
+  } = getState();
+
+  const { _id } = params
+
+  const url = `/api/products/${_id}`;
+  const method = 'DELETE';
+  const headers = { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${body.token}`
+                  }
+
+  const requestOptions = {
+    method,
+    headers,
+    body: JSON.stringify({})
+  };
+
+  const response = await fetch(url, requestOptions);
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.message)
+    error.name = response.status + '';
+    throw error  
+  } 
+  return data;
+})
+
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -57,6 +91,11 @@ const productSlice = createSlice({
       state.statusCreate = 'idle';
       state.errorCreate = null;
       state.createdProduct = {};
+    },
+    resetDeletedProduct(state, action) {
+      state.statusDelete = 'idle';
+      state.errorDelete = null;
+      state.deletedProduct = {};
     },
     resetProductState(state, action) {
       state.status = 'idle';
@@ -88,6 +127,18 @@ const productSlice = createSlice({
     [createProduct.rejected]: (state, action) => {
       state.statusCreate = 'failed'
       state.errorCreate = action.error
+    },
+    [deleteProduct.pending]: (state, action) => {
+      state.statusDelete = 'loading'
+    },
+    [deleteProduct.fulfilled]: (state, action) => {
+      state.statusDelete = 'succeeded'
+      // Add any fetched posts to the array
+      state.deletedProduct = action.payload
+    },
+    [deleteProduct.rejected]: (state, action) => {
+      state.statusDelete = 'failed'
+      state.errorDelete = action.error
     }
   }
 })
@@ -104,8 +155,14 @@ export const productStatusCreate = state => state.product.statusCreate;
 
 export const productErrorCreate = state => state.product.errorCreate;
 
+export const deletedProductState = state => state.product.deletedProduct
+
+export const productStatusDelete = state => state.product.statusDelete;
+
+export const productErrorDelete = state => state.product.errorDelete;
+
 export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
 
-export const { resetCreatedProduct, resetProductState } = productSlice.actions
+export const { resetCreatedProduct, resetProductState, resetDeletedProduct } = productSlice.actions
 
 export default productSlice.reducer

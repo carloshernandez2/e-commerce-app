@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MessageBox from '../../Carrito/features/MessageBox';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
-import { createdProductState, createProduct, fetchProducts, productError, productErrorCreate, productState, productStatus, productStatusCreate, resetCreatedProduct, resetProductState } from '../features/ProductSlice';
+import { createdProductState, createProduct, resetDeletedProduct, deleteProduct, fetchProducts, productError, productErrorCreate, productErrorDelete, productState, productStatus, productStatusCreate, productStatusDelete, resetCreatedProduct, resetProductState } from '../features/ProductSlice';
 
 export default function ProductList(props) {
 
@@ -12,6 +12,8 @@ export default function ProductList(props) {
   const createdProduct = useSelector(createdProductState)
   const statusCreate = useSelector(productStatusCreate)
   const errorCreate = useSelector(productErrorCreate)
+  const statusDelete = useSelector(productStatusDelete)
+  const errorDelete = useSelector(productErrorDelete)
 
   const dispatch = useDispatch();
 
@@ -20,7 +22,11 @@ export default function ProductList(props) {
       dispatch(resetProductState());
       props.history.push(`/products/${createdProduct._id}/edit`);
     }
-  }, [createdProduct, dispatch, props.history, statusCreate]);
+    if (statusDelete === 'succeeded') {
+      dispatch(resetDeletedProduct());
+      dispatch(fetchProducts());
+    }
+  }, [createdProduct, dispatch, props.history, statusCreate, statusDelete]);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -29,12 +35,14 @@ export default function ProductList(props) {
     }
 }, [dispatch])
 
-  const deleteHandler = () => {
-    /// TODO: dispatch delete action
+  const deleteHandler = (product) => {
+    if (window.confirm('¿Estás seguro de que quieres borrarlo?')) {
+      dispatch(deleteProduct({ _id: product._id }));
+    }
   };
 
   const createHandler = () => {
-    dispatch(createProduct());
+    dispatch(createProduct({}));
   };
 
   return (
@@ -47,6 +55,8 @@ export default function ProductList(props) {
       </div>
       {statusCreate === 'loading' && <LoadingBox></LoadingBox>}
       {statusCreate === 'failed' && <MessageBox variant="danger">{errorCreate.message}</MessageBox>}
+      {statusDelete === 'loading' && <LoadingBox></LoadingBox>}
+      {statusDelete === 'failed' && <MessageBox variant="danger">{errorDelete.message}</MessageBox>}
       {status === 'loading' ? (
         <LoadingBox variant="big"/>
       ) : status === 'failed' ? (

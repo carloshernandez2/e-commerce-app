@@ -34,8 +34,15 @@ router.post(
       numReviews: 0,
       description: 'sample description',
     });
-    const createdProduct = await product.save();
-    res.send(createdProduct);
+    try {
+      const createdProduct = await product.save();
+      res.send(createdProduct);
+    } catch(e) {
+      if (e.name === 'MongoError' && e.code === 11000) {
+        e.message = "name already registered"
+      }
+      res.status(500).send({ message: e.message });
+    }
   })
 );
 
@@ -56,6 +63,21 @@ router.put(
       product.description = req.body.description;
       const updatedProduct = await product.save();
       res.send(updatedProduct);
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+
+router.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      const deleteProduct = await product.remove();
+      res.send(deleteProduct);
     } else {
       res.status(404).send({ message: 'Product Not Found' });
     }
