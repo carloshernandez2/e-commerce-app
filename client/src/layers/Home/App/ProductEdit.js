@@ -55,6 +55,7 @@ export default function ProductEdit(props) {
     const bodyFormData = new FormData();
     bodyFormData.append('image', file);
     setLoadingUpload(true);
+    setErrorUpload(null);
     try {
         const requestOptions = {
         method: 'POST',
@@ -66,7 +67,7 @@ export default function ProductEdit(props) {
         const response = await fetch('/api/uploads', requestOptions);
         const data = await response.text();
         if (!response.ok) {
-            const error = new Error(data.message)
+            const error = new Error('Falló al subir la imagen')
             error.name = response.status + '';
             throw error  
           } 

@@ -17,6 +17,8 @@ import OrderHistory from './layers/PlaceOrder/App/OrderHistory';
 import Profile from './layers/SignIn/App/Profile';
 import ProductList from './layers/Home/App/ProductList';
 import OrderList from './layers/PlaceOrder/App/OrderList';
+import UserList from './layers/SignIn/App/UserList';
+import UserEdit from './layers/SignIn/App/UserEdit';
 
 function App() {
   
@@ -40,6 +42,8 @@ function App() {
             <Route path="/profile" component={Profile} />
             <AdminRoute path="/productlist" component={ProductList} />
             <AdminRoute path="/orderlist" component={OrderList}></AdminRoute>
+            <AdminRoute path="/userlist" component={UserList}></AdminRoute>
+            <AdminRoute path="/user/:id/edit" component={UserEdit}></AdminRoute>
             <Redirect to="/products"/>
           </Switch>
         </main>

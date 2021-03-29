@@ -5,7 +5,13 @@ const initialState = {
         ? JSON.parse(localStorage.getItem('user'))
         : null,
   status: 'idle',
-  error: null
+  error: null,
+  modifiedUsers: null,
+  modifiedStatus: 'idle',
+  modifiedError: null,
+  users: [],
+  usersStatus: 'idle',
+  usersError: null
 }
 
 export const fetchUser = createAsyncThunk('user/fetchUser', async (params, {getState}) => {
@@ -43,6 +49,65 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (params, {getS
   return data;
 })
 
+export const modifyUsers = createAsyncThunk('user/modifyUsers', async (params, {getState}) => {
+  const {
+    user: { body },
+  } = getState();
+
+  const { updateId, deleteId, name, email, isSeller, isAdmin } = params
+  const _id = updateId || deleteId
+
+  const url = `/api/users/${_id}`;
+  const method = deleteId ? 'DELETE' : 'PUT';
+  const headers = { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${body.token}`
+                  }
+  const main = deleteId ? {} : { name, email, isSeller, isAdmin }
+
+  const requestOptions = {
+    method,
+    headers,
+    body: JSON.stringify(main)
+  };
+
+  const response = await fetch(url, requestOptions);
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.message)
+    error.name = response.status + '';
+    throw error  
+  } 
+  return data;
+})
+
+export const getUsers = createAsyncThunk('user/getUsers', async (params, {getState}) => {
+  const {
+      user: { body },
+  } = getState();
+
+  if (!body) return;
+
+  const requestOptions = {
+    method: 'GET',
+    headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${body.token}`
+      }
+  };
+
+  const url = '/api/users'
+
+  const response = await fetch(url, requestOptions);
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.message)
+    error.name = response.status + '';
+    throw error
+  }
+  return data;
+})
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -50,6 +115,16 @@ const userSlice = createSlice({
     restoreState(state, action) {
         state.error = action.payload
         state.status = 'idle';
+    },
+    restoreModifiedUser(state, action) {
+        state.modifiedError = null
+        state.modifiedStatus = 'idle';
+        state.modifiedUsers = null
+    },
+    restoreUsers(state, action) {
+        state.usersError = null
+        state.usersStatus = 'idle';
+        state.users = []
     },
     signOut(state, action) {
       localStorage.removeItem('user');
@@ -71,18 +146,54 @@ const userSlice = createSlice({
     [fetchUser.rejected]: (state, action) => {
       state.status = 'failed'
       state.error = action.error
+    },
+    [modifyUsers.pending]: (state, action) => {
+      state.modifiedStatus = 'loading'
+    },
+    [modifyUsers.fulfilled]: (state, action) => {
+      state.modifiedStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.modifiedUsers = action.payload
+    },
+    [modifyUsers.rejected]: (state, action) => {
+      state.modifiedStatus = 'failed'
+      state.modifiedError = action.error
+    },
+    [getUsers.pending]: (state, action) => {
+      state.usersStatus = 'loading'
+    },
+    [getUsers.fulfilled]: (state, action) => {
+      state.usersStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.users = action.payload
+    },
+    [getUsers.rejected]: (state, action) => {
+      state.usersStatus = 'failed'
+      state.usersError = action.error
     }
   }
 })
 
 export const userState = state => state.user.body
 
-export const helperErrorState = state => state.user.helpers.helperError
-
 export const userStatus = state => state.user.status;
 
 export const userError = state => state.user.error;
 
-export const { restoreState, signOut } = userSlice.actions
+export const modifiedUsersState = state => state.user.modifiedUsers
+
+export const modifiedUsersStatus = state => state.user.modifiedStatus;
+
+export const modifiedUsersError = state => state.user.modifiedError;
+
+export const usersState = state => state.user.users
+
+export const singleUserState = (state, id) => state.user.users.find((user) => user._id === id)
+
+export const usersStatus = state => state.user.usersStatus;
+
+export const usersError = state => state.user.usersError;
+
+export const { restoreState, signOut, restoreModifiedUser, restoreUsers } = userSlice.actions
 
 export default userSlice.reducer

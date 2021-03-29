@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs')
 
 const data = {
   users: [
@@ -6,14 +6,14 @@ const data = {
       name: 'Basir',
       email: 'admin@example.com',
       password: bcrypt.hashSync('1234', 8),
-      isAdmin: true,
+      isAdmin: true
     },
     {
       name: 'John',
       email: 'user@example.com',
       password: bcrypt.hashSync('1234', 8),
-      isAdmin: false,
-    },
+      isAdmin: false
+    }
   ],
   products: [
     {
@@ -81,7 +81,7 @@ const data = {
       numReviews: 10,
       description: 'Producto de alta calidad',
       countInStock: 40
-    },
-  ],
-};
-module.exports = data;
+    }
+  ]
+}
+module.exports = data

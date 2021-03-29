@@ -26,3 +26,6 @@ package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.eslintrc.json
+
+remember test uploaded image for the moment /uploads/1616681902741.jpg
