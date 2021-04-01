@@ -73,7 +73,7 @@ export default function Seller(props) {
         ) : productsStatus === 'loading' ? ( 
           <LoadingBox variant="big"/>
         ) : productsStatus === 'failed' ? (
-          <MessageBox variant="danger">{errorProducts}</MessageBox>
+          <MessageBox variant="danger">{errorProducts.message}</MessageBox>
         ) : (
           <>
             {products.length === 0 && <MessageBox>Sin productos a la venta</MessageBox>}
