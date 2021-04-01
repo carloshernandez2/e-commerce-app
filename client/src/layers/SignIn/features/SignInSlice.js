@@ -87,12 +87,13 @@ export const getUsers = createAsyncThunk('user/getUsers', async (params, {getSta
   } = getState();
 
   const { userId } = params
+  const token = body && body.token
 
   const requestOptions = {
     method: 'GET',
     headers: { 
         'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${body.token}`
+        'Authorization': `Bearer ${token}`
       }
   };
 

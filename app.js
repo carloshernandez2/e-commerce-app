@@ -52,10 +52,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build/index.html'))
 })
 
-// error handler
-if (process.env.NODE_ENV === 'development') {
-  // only use in development
-  app.use(errorhandler())
-}
+app.use(errorhandler())
 
 module.exports = app
