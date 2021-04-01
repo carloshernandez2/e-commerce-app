@@ -9,5 +9,11 @@ module.exports = {
     return newOrderItems.map(seller => {
       return { seller }
     })
+  },
+
+  isOrderSeller (order, userId) {
+    return order.sellers.some(seller => {
+      return `${seller.seller}` === `${userId}`
+    })
   }
 }

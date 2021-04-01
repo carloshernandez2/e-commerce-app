@@ -2,7 +2,7 @@ const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const Order = require('../models/orderModel.js')
 const { isAuth, isSellerOrAdmin, isAdmin } = require('../middleware/utils.js')
-const { findSellers } = require('../middleware/helperMethods')
+const { findSellers, isOrderSeller } = require('../middleware/helperMethods')
 
 const router = express.Router()
 
@@ -63,7 +63,9 @@ router.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
-    if ((order && (`${req.user._id}` === `${order.user}`)) || req.user.isAdmin) {
+    const userId = req.user._id
+    const seller = isOrderSeller(order, userId)
+    if ((order && (`${req.user._id}` === `${order.user}`)) || req.user.isAdmin || seller) {
       res.send(order)
     } else {
       res.status(404).send({ message: 'Order Not Found' })
