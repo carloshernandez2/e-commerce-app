@@ -36,7 +36,7 @@ export default function Seller(props) {
         ) : status === 'loading' ? (
           <LoadingBox/>
         ) : status === 'failed' ? (
-          <MessageBox variant="danger">{error}</MessageBox>
+          <MessageBox variant="danger">{error.message}</MessageBox>
         ) : (
           <ul className="carta cuerpo-carta">
             <li>
