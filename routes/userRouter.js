@@ -1,7 +1,7 @@
 const data = require('../data.js')
 const expressAsyncHandler = require('express-async-handler')
 const User = require('../models/userModel.js')
-const { generateToken, isAuth, isAdmin } = require('../utils.js')
+const { generateToken, isAuth, isAdmin } = require('../middleware/utils.js')
 const bcrypt = require('bcryptjs')
 
 const express = require('express')
@@ -25,6 +25,8 @@ router.post(
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          isSeller: user.isSeller,
+          seller: user.isSeller ? user.seller : undefined,
           token: generateToken(user)
         })
         return
@@ -44,12 +46,15 @@ router.post(
     })
     try {
       const createdUser = await user.save()
+      createdUser.seller.logo = `/uploads/${createdUser._id}.jpg`
+      const finalUser = await createdUser.save()
       res.send({
-        _id: createdUser._id,
-        name: createdUser.name,
-        email: createdUser.email,
-        isAdmin: createdUser.isAdmin,
-        token: generateToken(createdUser)
+        _id: finalUser._id,
+        name: finalUser.name,
+        email: finalUser.email,
+        isAdmin: finalUser.isAdmin,
+        isSeller: finalUser.isSeller,
+        token: generateToken(finalUser)
       })
     } catch (e) {
       if (e.name === 'MongoError' && e.code === 11000) {
@@ -65,7 +70,7 @@ router.get(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id)
     if (user) {
-      res.send(user)
+      res.send([user])
     } else {
       res.status(404).send({ message: 'User Not Found' })
     }
@@ -80,6 +85,11 @@ router.put(
     if (user) {
       user.name = req.body.name || user.name
       user.email = req.body.email || user.email
+      if (user.isSeller) {
+        user.seller.name = req.body.sellerName || user.seller.name
+        user.seller.logo = req.body.sellerLogo || user.seller.logo
+        user.seller.description = req.body.sellerDescription || user.seller.description
+      }
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8)
       }
@@ -89,6 +99,8 @@ router.put(
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
+        isSeller: user.isSeller,
+        seller: user.isSeller ? user.seller : undefined,
         token: generateToken(updatedUser)
       })
     }
@@ -137,10 +149,10 @@ router.put(
     if (user) {
       user.name = req.body.name || user.name
       user.email = req.body.email || user.email
-      user.isSeller = req.body.isSeller || user.isSeller
-      user.isAdmin = req.body.isAdmin || user.isAdmin
+      user.isSeller = req.body.isSeller
+      user.isAdmin = req.body.isAdmin
       const updatedUser = await user.save()
-      res.send({ message: 'User Updated', user: updatedUser })
+      res.send(updatedUser)
     } else {
       res.status(404).send({ message: 'User Not Found' })
     }

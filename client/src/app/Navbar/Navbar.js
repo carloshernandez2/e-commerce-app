@@ -30,6 +30,23 @@ export function Navbar() {
           <li>
             <Name user={user}/>
           </li>
+          {user && user.isSeller && (
+            <li>
+              <div className="dropdown">
+                <Link to="#vendedor" className="link">
+                  Vendedor <i className="fa fa-caret-down"></i>
+                </Link>
+                <ul className="dropdown-content">
+                  <li>
+                    <Link to="/productlist/seller" className="link">Productos</Link>
+                  </li>
+                  <li>
+                    <Link to="/orderlist/seller" className="link">Pedidos</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          )}
           {user && user.isAdmin && (
             <li>
               <div className="dropdown">

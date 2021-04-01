@@ -9,11 +9,13 @@ const initialState = {
   createdProduct : null,
   errorDelete: null,
   statusDelete: 'idle',
-  deletedProduct : null
+  deletedProduct : null,
+  successAction: ''
 }
 
-export const fetchProducts = createAsyncThunk('product/fetchProducts', async () => {
-  let url = "/api/products";
+export const fetchProducts = createAsyncThunk('product/fetchProducts', async (params) => {
+  const { seller } = params
+  let url = `/api/products?seller=${seller || ''}`
   const response = await fetch(url);
   const data = await response.json();
   if(!response.ok) throw data.error;
@@ -101,7 +103,13 @@ const productSlice = createSlice({
       state.status = 'idle';
       state.error = null;
       state.body = [];
-    }
+    },
+    setSuccessAction(state, action) {
+      state.successAction = action.payload;
+    },
+    resetSuccessAction(state, action) {
+      state.successAction = ''
+    },
   },
   extraReducers: {
     [fetchProducts.pending]: (state, action) => {
@@ -163,6 +171,8 @@ export const productErrorDelete = state => state.product.errorDelete;
 
 export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
 
-export const { resetCreatedProduct, resetProductState, resetDeletedProduct } = productSlice.actions
+export const successActionState = state => state.product.successAction
+
+export const { resetCreatedProduct, resetProductState, resetDeletedProduct, resetSuccessAction, setSuccessAction } = productSlice.actions
 
 export default productSlice.reducer

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { uploadError, restoreUpload, uploadImage, uploadStatus } from '../../Carrito/features/CarritoSlice';
 import MessageBox from '../../Carrito/features/MessageBox';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
-import { userState } from '../../SignIn/features/SignInSlice';
 import { createdProductState, createProduct, productErrorCreate, productStatusCreate, resetCreatedProduct, resetProductState, singleProductState } from '../features/ProductSlice';
 
 export default function ProductEdit(props) {
@@ -12,10 +12,11 @@ export default function ProductEdit(props) {
   const createdProduct = useSelector(createdProductState)
   const statusCreate = useSelector(productStatusCreate)
   const errorCreate = useSelector(productErrorCreate)
+  const status = useSelector(uploadStatus)
+  const error = useSelector(uploadError)
 
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
-  const [image, setImage] = useState(product.image);
   const [category, setCategory] = useState(product.category);
   const [countInStock, setCountInStock] = useState(product.countInStock);
   const [brand, setBrand] = useState(product.brand);
@@ -29,7 +30,11 @@ export default function ProductEdit(props) {
       dispatch(resetCreatedProduct());
       props.history.push('/productlist');
     }
-  }, [createdProduct, dispatch, props.history, statusCreate]);
+  }, [createdProduct, dispatch, props.history, status, statusCreate]);
+
+  useEffect(() => {
+      return () => dispatch(restoreUpload())
+  }, [dispatch])
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -37,7 +42,6 @@ export default function ProductEdit(props) {
         _id: productId,
         name,
         price,
-        image,
         category,
         brand,
         countInStock,
@@ -45,38 +49,11 @@ export default function ProductEdit(props) {
       }));
   };
 
-  const [loadingUpload, setLoadingUpload] = useState(false);
-  const [errorUpload, setErrorUpload] = useState('');
-
-  const userInfo = useSelector(userState);
-
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append('image', file);
-    setLoadingUpload(true);
-    setErrorUpload(null);
-    try {
-        const requestOptions = {
-        method: 'POST',
-        headers: { 
-            'Authorization': `Bearer ${userInfo.token}`
-            },
-        body: bodyFormData
-        };
-        const response = await fetch('/api/uploads', requestOptions);
-        const data = await response.text();
-        if (!response.ok) {
-            const error = new Error('Falló al subir la imagen')
-            error.name = response.status + '';
-            throw error  
-          } 
-        setImage(data);
-        setLoadingUpload(false);
-    } catch (error) {
-        setErrorUpload(error.message);
-        setLoadingUpload(false);
-    }
+    dispatch(uploadImage({ bodyFormData, uploadId: productId }))
   };
 
   return (
@@ -87,6 +64,28 @@ export default function ProductEdit(props) {
                 </div>
                 {statusCreate === 'loading' && <LoadingBox />}
                 {statusCreate === 'failed' && <MessageBox variant="danger">{errorCreate.message}</MessageBox>}
+                <div>
+                    <h2>Cambiar imagen</h2>
+                </div>
+                <div>
+                    <label htmlFor="imageFile">Archivo imagen</label>
+                    <input
+                        type="file"
+                        id="imageFile"
+                        label="Escoge imagen"
+                        onChange={uploadFileHandler}
+                    ></input>
+                    {status === 'loading' && <LoadingBox />}
+                    {status === 'failed' && (
+                        <MessageBox variant="danger">{error.message}</MessageBox>
+                    )}
+                    {status === 'succeeded' && (
+                        <MessageBox variant="success">Archivo subido correctamente</MessageBox>
+                    )}
+                </div>
+                <div>
+                    <h2>Actualizar datos</h2>
+                </div>
                 <div>
                     <label htmlFor="name">Nombre</label>
                     <input
@@ -109,30 +108,6 @@ export default function ProductEdit(props) {
                         onChange={(e) => setPrice(e.target.value)}
                         required
                     ></input>
-                </div>
-                <div>
-                    <label htmlFor="image">Imagen</label>
-                    <input
-                        id="image"
-                        type="text"
-                        placeholder="Ingresa imagen"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                        required
-                    ></input>
-                </div>
-                <div>
-                    <label htmlFor="imageFile">Archivo imagen</label>
-                    <input
-                        type="file"
-                        id="imageFile"
-                        label="Escoge imagen"
-                        onChange={uploadFileHandler}
-                    ></input>
-                    {loadingUpload && <LoadingBox />}
-                    {errorUpload && (
-                        <MessageBox variant="danger">{errorUpload}</MessageBox>
-                    )}
                 </div>
                 <div>
                     <label htmlFor="category">Categoría</label>

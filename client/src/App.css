@@ -29,6 +29,7 @@
 }
 
 .App-footer.container {
+  margin-top: 20px;
   grid-area: App-footer;
   justify-content: center;
   min-height: 50px;

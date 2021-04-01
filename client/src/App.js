@@ -19,6 +19,8 @@ import ProductList from './layers/Home/App/ProductList';
 import OrderList from './layers/PlaceOrder/App/OrderList';
 import UserList from './layers/SignIn/App/UserList';
 import UserEdit from './layers/SignIn/App/UserEdit';
+import SellerRoute from './layers/Home/features/SellerRoute';
+import Seller from './layers/SignIn/App/Seller';
 
 function App() {
   
@@ -30,6 +32,7 @@ function App() {
         </header>
         <main className="App-main">
           <Switch>
+            <Route path="/seller/:id" component={Seller}></Route>
             <Route path="/products" component={AppProducts} />
             <Route path="/registro" component={SignIn} />
             <Route path="/inscripcion" component={Register} />
@@ -40,10 +43,12 @@ function App() {
             <Route path="/placeorder" component={PlaceOrder} />
             <Route path="/orderhistory" component={OrderHistory} />
             <Route path="/profile" component={Profile} />
-            <AdminRoute path="/productlist" component={ProductList} />
-            <AdminRoute path="/orderlist" component={OrderList}></AdminRoute>
-            <AdminRoute path="/userlist" component={UserList}></AdminRoute>
-            <AdminRoute path="/user/:id/edit" component={UserEdit}></AdminRoute>
+            <AdminRoute exact path="/productlist" component={ProductList} />
+            <AdminRoute exact path="/orderlist" component={OrderList} />
+            <AdminRoute path="/userlist" component={UserList} />
+            <AdminRoute path="/user/:id/edit" component={UserEdit} />
+            <SellerRoute path="/productlist/seller" component={ProductList} />
+            <SellerRoute path="/orderlist/seller" component={OrderList} />
             <Redirect to="/products"/>
           </Switch>
         </main>

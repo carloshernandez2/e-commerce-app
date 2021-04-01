@@ -5,12 +5,11 @@ import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import Home from "../features/Home";
 import { Product } from "../features/Product"
 import MessageBox from "../../Carrito/features/MessageBox";
-import { fetchProducts, productState } from "../features/ProductSlice";
+import { fetchProducts, productState, successActionState, resetSuccessAction, resetProductState } from "../features/ProductSlice";
 import { productStatus } from "../features/ProductSlice";
 import { productError } from "../features/ProductSlice";
 
 import "./AppProducts.css";
-import { resetOrder } from '../../PlaceOrder/features/OrderSlice';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
 import ProductEdit from './ProductEdit';
 
@@ -21,16 +20,27 @@ function AppProducts() {
     const products = useSelector(productState);
     const status = useSelector(productStatus);
     const error = useSelector(productError);
+    const successAction = useSelector(successActionState);
+
     const dispatch = useDispatch();
 
+    const closeAlert = () => {
+        dispatch(resetSuccessAction())
+    }
+
     useEffect(() => {
-        dispatch(fetchProducts())
-        dispatch(resetOrder([]))
+        dispatch(fetchProducts({}))
+        return () => {
+            dispatch(resetSuccessAction())
+            dispatch(resetProductState())
+        }
     }, [dispatch])
 
     let content;
 
-    if (status === 'loading') {
+    if (status === 'idle') {
+        content = null;
+    } else if (status === 'loading') {
         content = (
             <LoadingBox variant="big"/>
         )
@@ -38,6 +48,7 @@ function AppProducts() {
         content = (
             <Switch>
                 <Route exact path={`${path}`}>
+                    {successAction && <MessageBox variant="success" close={closeAlert}>{successAction}</MessageBox>}
                     <div className="container centro">
                         {products.length? products.map((product) => (
                             <Home key={product._id} product={product} />
@@ -57,11 +68,7 @@ function AppProducts() {
         )
     }
 
-    return (
-        <React.Fragment>
-            {content}
-        </React.Fragment>
-    );
+    return content
 }
 
 export default AppProducts;

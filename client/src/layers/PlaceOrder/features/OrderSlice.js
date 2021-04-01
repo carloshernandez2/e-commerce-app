@@ -52,7 +52,7 @@ export const listOrderMine = createAsyncThunk('order/listOrderMine', async (para
 
     if (!body) return [];
 
-    const { admin } = params
+    const { admin, seller } = params
 
     const requestOptions = {
       method: 'GET',
@@ -62,7 +62,7 @@ export const listOrderMine = createAsyncThunk('order/listOrderMine', async (para
         }
     };
 
-    const url = admin ? '/api/orders' : '/api/orders/mine'
+    const url = admin ? `/api/orders?seller=${seller || ''}` : '/api/orders/mine'
 
     const response = await fetch(url, requestOptions);
     const data = await response.json();

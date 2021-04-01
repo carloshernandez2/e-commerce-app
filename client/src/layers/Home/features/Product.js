@@ -34,25 +34,44 @@ export function Product(props) {
       <Link to="/" className="link">De vuelta a productos</Link>
       <div className="container top">
         <div className="foco">
-          <img className="grande" src={product.image} alt={product.image}></img>
+          <img 
+          className="grande" 
+          src={`${product.image}?v=${Date.now()}`} 
+          alt={product.image}
+          onError={(e) => e.target.src = '/images/fallback.jpg'}
+          ></img>
         </div>
         <div className="contenido-producto">
-          <ul>
-            <li>
-              <h1>{product.name}</h1>
-            </li>
-            <li>
-              <Rating
-                rating={product.rating}
-                numReviews={product.numReviews}
-              ></Rating>
-            </li>
-            <li>Precio : ${product.price}</li>
-            <li>
-              Descripción:
-              <p>{product.description}</p>
-            </li>
-          </ul>
+          <div className="carta cuerpo-carta">
+            <ul>
+              <li>
+                Vendedor{' '}
+                <h2>
+                  <Link to={`/seller/${product.seller._id}`} className="link">
+                    {product.seller.seller.name}
+                  </Link>
+                </h2>
+                <Rating
+                  rating={product.seller.seller.rating}
+                  numReviews={product.seller.seller.numReviews}
+                ></Rating>
+              </li>
+              <li>
+                <h1>{product.name}</h1>
+              </li>
+              <li>
+                <Rating
+                  rating={product.rating}
+                  numReviews={product.numReviews}
+                ></Rating>
+              </li>
+              <li>Precio : ${product.price}</li>
+              <li>
+                Descripción:
+                <p>{product.description}</p>
+              </li>
+            </ul>
+          </div>
         </div>
         <div className="contenido-producto">
           <div className="carta cuerpo-carta">

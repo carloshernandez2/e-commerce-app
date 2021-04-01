@@ -6,6 +6,7 @@ import { PayPalButton } from 'react-paypal-button-v2';
 import { userState } from '../../SignIn/features/SignInSlice';
 import { deleteUpdateOrder, fetchOrder, modifiedError, modifiedStatus, orderError, orderState, orderStatus, resetModified, resetOrder } from '../features/OrderSlice';
 import LoadingBox from '../features/LoadingBox';
+import { successActionState, resetSuccessAction } from '../../Home/features/ProductSlice';
 
 export default function Order(props) {
 
@@ -16,6 +17,9 @@ export default function Order(props) {
     const error = useSelector(orderError);
     const updateStatus = useSelector(modifiedStatus);
     const updateError = useSelector(modifiedError);
+    const successAction = useSelector(successActionState);
+
+    const isAdmin = user && user.isAdmin
 
     const [sdkReady, setSdkReady] = useState(false);
 
@@ -33,6 +37,10 @@ export default function Order(props) {
         };
         document.body.appendChild(script);
       };
+
+      const closeAlert = () => {
+        dispatch(resetSuccessAction())
+    }
 
     useEffect(() => {
         if (!order._id) {
@@ -66,6 +74,7 @@ export default function Order(props) {
         return () => {
             dispatch(resetModified());
             dispatch(resetOrder([]));
+            dispatch(resetSuccessAction());
         }
     }, [dispatch]);
 
@@ -84,6 +93,7 @@ export default function Order(props) {
         null
     ) : (
         <div>
+            {successAction && <MessageBox variant="success" close={closeAlert}>{successAction}</MessageBox>}
             <h1>Pedido {order._id}</h1>
             <div className="container top">
                 <div className="foco">
@@ -205,7 +215,7 @@ export default function Order(props) {
                             )}
                             </li>
                         )}
-                        {user.isAdmin && order.isPaid && !order.isDelivered && (
+                        {isAdmin && order.isPaid && !order.isDelivered && (
                             <li>
                             {updateStatus === "loading" && <LoadingBox />}
                             {updateStatus === "failed" && (

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { carritoItems, carritoState, compraState, paymentMethodState, restoreCart } from '../../Carrito/features/CarritoSlice';
 import CheckoutSteps from '../../Carrito/features/CheckoutSteps';
 import MessageBox from '../../Carrito/features/MessageBox';
+import { setSuccessAction } from '../../Home/features/ProductSlice';
 import { userState } from '../../SignIn/features/SignInSlice';
 import LoadingBox from '../features/LoadingBox';
 import { orderState, orderStatus, orderError, fetchOrder, resetOrder } from "../features/OrderSlice";
@@ -44,7 +45,8 @@ export default function PlaceOrder(props) {
         qty: item.qty,
         image: item.image,
         price: item.price,
-        product: item.product
+        product: item.product,
+        seller: item.seller
       }
     }))
     const newOrder = {
@@ -56,7 +58,7 @@ export default function PlaceOrder(props) {
       taxPrice,
       totalPrice,
     }
-    dispatch(fetchOrder({newOrder}));
+    dispatch(fetchOrder({ newOrder }));
   };
 
   useEffect(() => {
@@ -68,6 +70,7 @@ export default function PlaceOrder(props) {
     if (status[0] === "succeeded") {
       setLoading(false)
       dispatch(resetOrder([]));
+      dispatch(setSuccessAction('Orden creada satisfactoriamente'))
       const param = order.order && order.order._id
       if (user) props.history.push(`/order/${param}`);
       dispatch(restoreCart())

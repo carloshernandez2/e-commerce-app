@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-const initialState =  localStorage.getItem('cartItems')
+const savedState =  localStorage.getItem('cartItems')
                       ? JSON.parse(localStorage.getItem('cartItems'))
                       :  {cartItems: 0,
                           body: [],
@@ -8,6 +8,37 @@ const initialState =  localStorage.getItem('cartItems')
                           paymentMethod: '',
                           status: 'idle',
                           error: null}
+
+const initialState = {
+  ...savedState,
+  uploadName: '',
+  uploadStatus: 'idle',
+  uploadError: null
+}
+
+export const uploadImage = createAsyncThunk('carrito/uploadImage', async (params, {getState}) => {
+  const {
+    user: { body },
+  } = getState();
+
+  const { bodyFormData, uploadId } = params
+
+  const requestOptions = {
+    method: 'POST',
+    headers: { 
+        'Authorization': `Bearer ${body.token}`
+        },
+    body: bodyFormData
+    };
+    const response = await fetch(`/api/uploads/${uploadId}`, requestOptions);
+    const data = await response.text();
+    if (!response.ok) {
+        const error = new Error('Falló al subir la imagen')
+        error.name = response.status + '';
+        throw error  
+      }
+    return data 
+})
 
 const carritoSlice = createSlice({
   name: 'carrito',
@@ -32,6 +63,7 @@ const carritoSlice = createSlice({
                     price: product.price,
                     countInStock: product.countInStock,
                     product: product._id || product.product,
+                    seller: product.seller,
                     qty,
                 }
             }
@@ -60,8 +92,28 @@ const carritoSlice = createSlice({
     metodoPago(state, action) {
       state.paymentMethod = action.payload
       localStorage.setItem('cartItems', JSON.stringify(state));
+    },
+    restoreUpload (state, action) {
+      state.uploadStatus = 'idle'
+      state.uploadName = ''
+      state.uploadError = null
+    }
+  },
+  extraReducers: {
+    [uploadImage.pending]: (state, action) => {
+      state.uploadStatus = 'loading'
+    },
+    [uploadImage.fulfilled]: (state, action) => {
+      state.uploadStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.uploadName = action.payload
+    },
+    [uploadImage.rejected]: (state, action) => {
+      state.uploadStatus = 'failed'
+      state.uploadError = action.error
     }
   }
+
 })
 
 export const carritoState = state => state.carrito.body
@@ -72,8 +124,14 @@ export const compraState = state => state.carrito.compra
 
 export const carritoItems = state => state.carrito.cartItems 
 
+export const uploadState = state => state.carrito.uploadName
+
+export const uploadStatus = state => state.carrito.uploadStatus 
+
+export const uploadError = state => state.carrito.uploadError
+
 export const paymentMethodState = state => state.carrito.paymentMethod 
 
-export const { carritoUpdated, deleteItem, restoreCart, guardarCompra, metodoPago } = carritoSlice.actions
+export const { carritoUpdated, deleteItem, restoreCart, guardarCompra, metodoPago, restoreUpload } = carritoSlice.actions
 
 export default carritoSlice.reducer

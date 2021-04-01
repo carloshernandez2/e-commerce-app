@@ -1,16 +1,22 @@
 const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const Order = require('../models/orderModel.js')
-const { isAuth, isAdmin } = require('../utils.js')
+const { isAuth, isSellerOrAdmin, isAdmin } = require('../middleware/utils.js')
+const { findSellers } = require('../middleware/helperMethods')
 
 const router = express.Router()
 
 router.get(
   '/',
   isAuth,
-  isAdmin,
+  isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find({}).populate('user', 'name')
+    const seller = req.query.seller || ''
+    const sellerFilter = seller ? { 'sellers.seller': seller } : {}
+    const orders = await Order.find({ ...sellerFilter }).populate(
+      'user',
+      'name'
+    )
     res.send(orders)
   })
 )
@@ -29,10 +35,12 @@ router.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const newOrder = req.body.container
+    const sellers = findSellers(newOrder.orderItems)
     if (newOrder.orderItems.length === 0) {
       res.status(400).send({ message: 'Cart is empty' })
     } else {
       const order = new Order({
+        sellers,
         orderItems: newOrder.orderItems,
         shippingAddress: newOrder.shippingAddress,
         paymentMethod: newOrder.paymentMethod,

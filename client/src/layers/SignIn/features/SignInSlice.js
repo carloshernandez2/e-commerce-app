@@ -20,7 +20,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (params, {getS
       user: { body },
   } = getState();
 
-  const {userId, email, password, name} = params;
+  const {userId, email, password, name, sellerName, sellerLogo, sellerDescription} = params;
 
   const url = userId? '/api/users/profile' : name? "/api/users/register" : "/api/users/signin";
   const method = userId? 'PUT' : 'POST';
@@ -28,15 +28,15 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (params, {getS
                               'Content-Type': 'application/json', 
                               'Authorization': `Bearer ${body.token}`
                             } : {'Content-Type': 'application/json'}
+  const main = userId 
+    ? { name, email, password, sellerName, sellerLogo, sellerDescription}
+    : name ? { name, email, password }
+    : {email, password}
 
   const requestOptions = {
     method,
     headers,
-    body: JSON.stringify({ 
-                          email, 
-                          password,
-                          name: name || undefined
-                        })
+    body: JSON.stringify(main)
   };
 
   const response = await fetch(url, requestOptions);
@@ -86,7 +86,7 @@ export const getUsers = createAsyncThunk('user/getUsers', async (params, {getSta
       user: { body },
   } = getState();
 
-  if (!body) return;
+  const { userId } = params
 
   const requestOptions = {
     method: 'GET',
@@ -96,7 +96,7 @@ export const getUsers = createAsyncThunk('user/getUsers', async (params, {getSta
       }
   };
 
-  const url = '/api/users'
+  const url = userId ? `/api/users/${userId}` : '/api/users'
 
   const response = await fetch(url, requestOptions);
   const data = await response.json();

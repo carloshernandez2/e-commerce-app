@@ -48,19 +48,31 @@ button.small {
     align-items: flex-start;
 }
 
+.container.start {
+    justify-content: flex-start;
+  }
+
 .contenido-producto {
     flex: 1 1 16rem;
     margin: 0 10px;
 }
 
 .foco {
-    flex: 2 1 31rem;
+    flex: 2 1 32rem;
     min-height: calc(100vh - 20vh - 50px);
 }
+
+.extrafoco {
+    flex: 32 1 48rem;
+  }
 
 .min-30 {
     min-width: 30rem;
 }
+
+.p-1 {
+    padding: 1rem;
+  }
 
 img.grande {
     width: 100%;
@@ -80,6 +92,8 @@ img.pequeño {
   }
 
 .alert {
+    display: flex;
+    justify-content: space-between;
     padding: 1rem;
     border: 0.1rem solid transparent;
     border-radius: 0.5rem;

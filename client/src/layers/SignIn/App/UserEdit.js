@@ -30,15 +30,18 @@ export default function UserEdit(props) {
             if (userId === userInSession._id) dispatch(fetchUser({ userId: userInSession._id }))
             props.history.push('/userlist');
         }
+    }, [dispatch, modifiedStatus, props.history, userId, userInSession]);
+
+    useEffect(() => {
         if (!user) {
-            dispatch(getUsers(userId));
+            dispatch(getUsers({ userId }));
         } else {
             setName(user.name);
             setEmail(user.email);
             setIsSeller(user.isSeller);
             setIsAdmin(user.isAdmin);
         }
-    }, [dispatch, props.history, modifiedStatus, userId, user, userInSession]);
+    }, [dispatch, user, userId])
 
     const submitHandler = (e) => {
         e.preventDefault();
