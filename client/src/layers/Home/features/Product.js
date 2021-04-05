@@ -36,7 +36,7 @@ export function Product(props) {
         <div className="foco">
           <img 
           className="grande" 
-          src={`${product.image}?v=${Date.now()}`} 
+          src={`${product.image}`} 
           alt={product.image}
           onError={(e) => e.target.src = '/images/fallback.jpg'}
           ></img>

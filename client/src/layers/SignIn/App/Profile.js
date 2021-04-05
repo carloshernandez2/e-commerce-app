@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { restoreUpload, uploadError, uploadImage, uploadStatus } from '../../Carrito/features/CarritoSlice';
+import { restoreUpload, setMessage, uploadError, uploadImage, uploadStatus } from '../../Carrito/features/CarritoSlice';
 import MessageBox from '../../Carrito/features/MessageBox';
-import { setSuccessAction } from '../../Home/features/ProductSlice';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
 import { fetchUser, restoreState, userError, userState, userStatus } from '../features/SignInSlice';
 
@@ -41,7 +40,7 @@ export default function Profile(props) {
 
     useEffect(() => {
         if (status === 'succeeded') {
-            dispatch(setSuccessAction('Perfil actualizado satisfactoriamente'))
+            dispatch(setMessage({ text:'Perfil actualizado satisfactoriamente', type: 'success' }))
             props.history.push('/products');
         }
         if (!userInSession) props.history.push('/registro');

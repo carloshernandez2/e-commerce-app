@@ -7,6 +7,16 @@ const bcrypt = require('bcryptjs')
 const express = require('express')
 const router = express.Router()
 
+router.get(
+  '/top-sellers',
+  expressAsyncHandler(async (req, res) => {
+    const topSellers = await User.find({ isSeller: true })
+      .sort({ 'seller.rating': -1 })
+      .limit(3)
+    res.send(topSellers)
+  })
+)
+
 router.get('/seed', expressAsyncHandler(async (req, res) => {
   // await User.remove({});
   const createdUsers = await User.insertMany(data.users)

@@ -86,7 +86,7 @@ export const getUsers = createAsyncThunk('user/getUsers', async (params, {getSta
       user: { body },
   } = getState();
 
-  const { userId } = params
+  const { userId, topSellers } = params
   const token = body && body.token
 
   const requestOptions = {
@@ -97,7 +97,7 @@ export const getUsers = createAsyncThunk('user/getUsers', async (params, {getSta
       }
   };
 
-  const url = userId ? `/api/users/${userId}` : '/api/users'
+  const url = userId ? `/api/users/${userId}` : topSellers ? '/api/users/top-sellers' : '/api/users'
 
   const response = await fetch(url, requestOptions);
   const data = await response.json();

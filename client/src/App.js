@@ -21,6 +21,7 @@ import UserList from './layers/SignIn/App/UserList';
 import UserEdit from './layers/SignIn/App/UserEdit';
 import SellerRoute from './layers/Home/features/SellerRoute';
 import Seller from './layers/SignIn/App/Seller';
+import Search from './layers/Home/App/Search';
 
 function App() {
   
@@ -43,6 +44,7 @@ function App() {
             <Route path="/placeorder" component={PlaceOrder} />
             <Route path="/orderhistory" component={OrderHistory} />
             <Route path="/profile" component={Profile} />
+            <Route exact path="/search/name/:name?" component={Search}></Route>
             <AdminRoute exact path="/productlist" component={ProductList} />
             <AdminRoute exact path="/orderlist" component={OrderList} />
             <AdminRoute path="/userlist" component={UserList} />

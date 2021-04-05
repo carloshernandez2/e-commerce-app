@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { carritoItems, carritoState, compraState, paymentMethodState, restoreCart } from '../../Carrito/features/CarritoSlice';
+import { carritoItems, carritoState, compraState, paymentMethodState, restoreCart, setMessage } from '../../Carrito/features/CarritoSlice';
 import CheckoutSteps from '../../Carrito/features/CheckoutSteps';
 import MessageBox from '../../Carrito/features/MessageBox';
-import { setSuccessAction } from '../../Home/features/ProductSlice';
 import { userState } from '../../SignIn/features/SignInSlice';
 import LoadingBox from '../features/LoadingBox';
 import { orderState, orderStatus, orderError, fetchOrder, resetOrder } from "../features/OrderSlice";
@@ -70,7 +69,7 @@ export default function PlaceOrder(props) {
     if (status[0] === "succeeded") {
       setLoading(false)
       dispatch(resetOrder([]));
-      dispatch(setSuccessAction('Orden creada satisfactoriamente'))
+      dispatch(setMessage({ text: 'Orden creada satisfactoriamente', type: 'success' }))
       const param = order.order && order.order._id
       if (user) props.history.push(`/order/${param}`);
       dispatch(restoreCart())

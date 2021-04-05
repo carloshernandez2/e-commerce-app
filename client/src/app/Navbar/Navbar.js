@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 import { carritoItems } from '../../layers/Carrito/features/CarritoSlice';
+import SearchBox from '../../layers/Home/features/SearchBox';
 import Name from '../../layers/SignIn/features/Name';
 import { userState } from '../../layers/SignIn/features/SignInSlice';
 
@@ -19,6 +20,15 @@ export function Navbar() {
       </figure>
       <nav className="nav">
         <ul className="list">
+          <li>
+          <div>
+            <Route
+              render={({ history }) => (
+                <SearchBox history={history}></SearchBox>
+              )}
+            ></Route>
+          </div>
+          </li>
           <li>
             <Link to="/cart" className="link">
               Carrito

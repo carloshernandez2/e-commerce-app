@@ -1,17 +1,22 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
+import { Route, Switch, useRouteMatch, Redirect, Link } from "react-router-dom";
 
 import Home from "../features/Home";
 import { Product } from "../features/Product"
 import MessageBox from "../../Carrito/features/MessageBox";
-import { fetchProducts, productState, successActionState, resetSuccessAction, resetProductState } from "../features/ProductSlice";
+import { fetchProducts, productState, resetProductState } from "../features/ProductSlice";
 import { productStatus } from "../features/ProductSlice";
 import { productError } from "../features/ProductSlice";
 
 import "./AppProducts.css";
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
+import { Carousel } from 'react-responsive-carousel';
 import LoadingBox from '../../PlaceOrder/features/LoadingBox';
 import ProductEdit from './ProductEdit';
+import { getUsers, restoreUsers, usersError, usersState, usersStatus } from '../../SignIn/features/SignInSlice';
+import { messageState, resetMessage } from '../../Carrito/features/CarritoSlice';
 
 function AppProducts() {
 
@@ -20,21 +25,69 @@ function AppProducts() {
     const products = useSelector(productState);
     const status = useSelector(productStatus);
     const error = useSelector(productError);
-    const successAction = useSelector(successActionState);
+    const errorSellers = useSelector(usersError);
+    const sellers = useSelector(usersState);
+    const statusSellers = useSelector(usersStatus);
+    const { text, type } = useSelector(messageState);
 
     const dispatch = useDispatch();
 
     const closeAlert = () => {
-        dispatch(resetSuccessAction())
+        dispatch(resetMessage())
     }
 
     useEffect(() => {
         dispatch(fetchProducts({}))
+        dispatch(getUsers({topSellers: true}))
         return () => {
-            dispatch(resetSuccessAction())
+            dispatch(resetMessage())
             dispatch(resetProductState())
+            dispatch(restoreUsers())
         }
     }, [dispatch])
+
+    const main = products.length? (
+        <Switch>
+            <Route exact path={`${path}`}>
+                {text && <MessageBox variant={type} close={closeAlert}>{text}</MessageBox>}
+                {statusSellers === 'idle' ? (
+                    null
+                ) : statusSellers === 'loading' ? (
+                    <LoadingBox />
+                ) : statusSellers === 'failed' ? (
+                    <MessageBox variant="danger">{errorSellers}</MessageBox>
+                ) : (
+                    <>
+                    <h2>Top Sellers</h2>
+                    <Carousel showArrows autoPlay showThumbs={false}>
+                        {sellers.map((seller) => (
+                        <div key={seller._id}>
+                            <Link to={`/seller/${seller._id}`}>
+                                <img 
+                                src={`${seller.seller.logo}?v=${Date.now()}`} 
+                                alt={seller.seller.name} 
+                                className="medio"
+                                onError={(e) => e.target.src = '/images/fallback.jpg'}
+                                />
+                                <p className="legend">{seller.seller.name}</p>
+                            </Link>
+                        </div>
+                        ))}
+                    </Carousel>
+                    </>
+                )}
+                <h2>Featured Products</h2>
+                <div className="container centro">
+                    {products.map((product) => (
+                        <Home key={product._id} product={product} />
+                    ))}
+                </div>
+            </Route>
+            <Route exact path="/products/:id" component={Product} />
+            <Route exact path="/products/:id/edit" component={ProductEdit} />
+            <Redirect to="/products"/>
+        </Switch>
+    ) : <MessageBox>No content available</MessageBox>
 
     let content;
 
@@ -45,21 +98,7 @@ function AppProducts() {
             <LoadingBox variant="big"/>
         )
     } else if (status === 'succeeded') {
-        content = (
-            <Switch>
-                <Route exact path={`${path}`}>
-                    {successAction && <MessageBox variant="success" close={closeAlert}>{successAction}</MessageBox>}
-                    <div className="container centro">
-                        {products.length? products.map((product) => (
-                            <Home key={product._id} product={product} />
-                        )) : <MessageBox>{error.message}</MessageBox>}
-                    </div>
-                </Route>
-                <Route exact path="/products/:id" component={Product} />
-                <Route exact path="/products/:id/edit" component={ProductEdit} />
-                <Redirect to="/products"/>
-            </Switch>
-        )
+        content = main
     } else if (status === 'failed') {
         content = (
         <div className="container centro">

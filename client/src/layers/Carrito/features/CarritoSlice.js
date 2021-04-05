@@ -13,7 +13,11 @@ const initialState = {
   ...savedState,
   uploadName: '',
   uploadStatus: 'idle',
-  uploadError: null
+  uploadError: null,
+  message: {
+    type: null,
+    text: ''
+  }
 }
 
 export const uploadImage = createAsyncThunk('carrito/uploadImage', async (params, {getState}) => {
@@ -46,6 +50,11 @@ const carritoSlice = createSlice({
   reducers: {
     carritoUpdated: {
         reducer(state, action) {
+            const cart = state.body
+            if (cart.length && (cart[0].seller._id !== action.payload.seller._id)) {
+              state.message = { text:'Recuerda elegir productos de un solo vendedor por orden', type:'danger' }
+              return;
+            }
             let content = state.body.filter(product => {
                 return product.product !== action.payload.product;
             })
@@ -97,6 +106,12 @@ const carritoSlice = createSlice({
       state.uploadStatus = 'idle'
       state.uploadName = ''
       state.uploadError = null
+    },
+    resetMessage(state, action) {
+      state.message = {text: '', type: null}
+    },
+    setMessage(state, action) {
+      state.message = action.payload;
     }
   },
   extraReducers: {
@@ -132,6 +147,8 @@ export const uploadError = state => state.carrito.uploadError
 
 export const paymentMethodState = state => state.carrito.paymentMethod 
 
-export const { carritoUpdated, deleteItem, restoreCart, guardarCompra, metodoPago, restoreUpload } = carritoSlice.actions
+export const messageState = state => state.carrito.message
+
+export const { carritoUpdated, deleteItem, restoreCart, guardarCompra, metodoPago, restoreUpload, resetMessage, setMessage } = carritoSlice.actions
 
 export default carritoSlice.reducer

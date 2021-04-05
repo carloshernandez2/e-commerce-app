@@ -1,1 +1,6 @@
 @import url("../../../Static/CSS/animation/loading-big.css");
+
+/* Carousel */
+.carousel .slide img {
+  overflow: hidden;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { singleProductState } from '../../Home/features/ProductSlice';
-import { carritoItems, carritoState, carritoUpdated, deleteItem } from '../features/CarritoSlice';
+import { carritoItems, carritoState, carritoUpdated, deleteItem, messageState, resetMessage } from '../features/CarritoSlice';
 import MessageBox from '../features/MessageBox';
 
 export default function Carrito(props) {
@@ -17,12 +17,17 @@ export default function Carrito(props) {
     const product = useSelector(state => singleProductState(state, id));
     const cartItems = useSelector(carritoItems);
     const cart = useSelector(carritoState);
+    const { text, type } = useSelector(messageState);
 
     const [error, setError] = useState({});
 
     useEffect(() => {
         if (product) dispatch(carritoUpdated(product, qty));
     }, [dispatch, product, qty])
+
+    useEffect(() => {
+        return () => dispatch(resetMessage())
+    }, [dispatch])
 
     // elimina el alert de error cuando una cantidad es ingresada satisfactoriamente
     useEffect(() =>{
@@ -38,13 +43,18 @@ export default function Carrito(props) {
         dispatch(deleteItem(id))
     };
 
+    const closeAlert = () => {
+      dispatch(resetMessage())
+    }
+
     const checkoutHandler = () => {
         props.history.push('/registro?redirect=compra');
     };
 
     return (
-        <div className="container top">
+      <div className="container top">
         <div className="foco">
+          {text && <MessageBox variant={type} close={closeAlert}>{text}</MessageBox>}
           <h1>Carrito</h1>
           {cartItems === 0 ? (
             <MessageBox>
@@ -59,6 +69,7 @@ export default function Carrito(props) {
                       <img
                         src={item.image}
                         alt={item.name}
+                        onError={(e) => e.target.src = '/images/fallback.jpg'}
                         className="pequeño"
                       ></img>
                     </div>

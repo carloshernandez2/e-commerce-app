@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import MessageBox from '../../Carrito/features/MessageBox';
-import { PayPalButton } from 'react-paypal-button-v2';
 import { userState } from '../../SignIn/features/SignInSlice';
 import { deleteUpdateOrder, fetchOrder, modifiedError, modifiedStatus, orderError, orderState, orderStatus, resetModified, resetOrder } from '../features/OrderSlice';
 import LoadingBox from '../features/LoadingBox';
-import { successActionState, resetSuccessAction } from '../../Home/features/ProductSlice';
+import { PayPalButton } from '../features/PayPalButton';
+import { messageState, resetMessage } from '../../Carrito/features/CarritoSlice';
 
 export default function Order(props) {
 
@@ -17,7 +17,7 @@ export default function Order(props) {
     const error = useSelector(orderError);
     const updateStatus = useSelector(modifiedStatus);
     const updateError = useSelector(modifiedError);
-    const successAction = useSelector(successActionState);
+    const { text, type } = useSelector(messageState);
 
     const isAdmin = user && user.isAdmin
 
@@ -32,6 +32,8 @@ export default function Order(props) {
         script.type = 'text/javascript';
         script.src = `https://www.paypal.com/sdk/js?client-id=${data}`;
         script.async = true;
+        script.setAttribute('data-sdk-integration-source','button-factory')
+        script.setAttribute('data-csp-nonce','xyz-123')
         script.onload = () => {
           setSdkReady(true);
         };
@@ -39,7 +41,7 @@ export default function Order(props) {
       };
 
       const closeAlert = () => {
-        dispatch(resetSuccessAction())
+        dispatch(resetMessage())
     }
 
     useEffect(() => {
@@ -74,7 +76,7 @@ export default function Order(props) {
         return () => {
             dispatch(resetModified());
             dispatch(resetOrder([]));
-            dispatch(resetSuccessAction());
+            dispatch(resetMessage());
         }
     }, [dispatch]);
 
@@ -93,7 +95,7 @@ export default function Order(props) {
         null
     ) : (
         <div>
-            {successAction && <MessageBox variant="success" close={closeAlert}>{successAction}</MessageBox>}
+            {text && <MessageBox variant={type} close={closeAlert}>{text}</MessageBox>}
             <h1>Pedido {order._id}</h1>
             <div className="container top">
                 <div className="foco">
@@ -144,6 +146,7 @@ export default function Order(props) {
                                     src={item.image}
                                     alt={item.name}
                                     className="pequeño"
+                                    onError={(e) => e.target.src = '/images/fallback.jpg'}
                                     ></img>
                                 </div>
                                 <div className="min-30">
