@@ -1,41 +1,50 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import MessageBox from '../../Carrito/features/MessageBox';
-import Home from '../../Home/features/Home';
-import { fetchProducts, productError, productState, productStatus, resetProductState } from '../../Home/features/ProductSlice';
-import Rating from '../../Home/features/Rating';
-import LoadingBox from '../../PlaceOrder/features/LoadingBox';
-import { getUsers, restoreUsers, usersError, usersState, usersStatus } from '../features/SignInSlice';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import MessageBox from "../../Carrito/features/MessageBox";
+import Home from "../../Home/features/Home";
+import {
+  fetchProducts,
+  productError,
+  productState,
+  productStatus,
+  resetProductState,
+} from "../../Home/features/ProductSlice";
+import Rating from "../../Home/features/Rating";
+import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import {
+  getUsers,
+  restoreUsers,
+  usersError,
+  usersState,
+  usersStatus,
+} from "../features/SignInSlice";
 
 export default function Seller(props) {
-  
   const sellerId = props.match.params.id;
-  const [user] = useSelector(usersState)
-  const status = useSelector(usersStatus)
-  const error = useSelector(usersError)
-  const productsStatus = useSelector(productStatus)
-  const errorProducts = useSelector(productError)
-  const products = useSelector(productState)
+  const [user] = useSelector(usersState);
+  const status = useSelector(usersStatus);
+  const error = useSelector(usersError);
+  const productsStatus = useSelector(productStatus);
+  const errorProducts = useSelector(productError);
+  const products = useSelector(productState);
 
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     dispatch(getUsers({ userId: sellerId }));
     dispatch(fetchProducts({ seller: sellerId }));
     return () => {
-      dispatch(restoreUsers())
-      dispatch(resetProductState())
-    }
+      dispatch(restoreUsers());
+      dispatch(resetProductState());
+    };
   }, [dispatch, sellerId]);
 
   return (
     <div className="container top">
       <div className="contenido-producto">
-        {status === 'idle' ? (
-          null
-        ) : status === 'loading' ? (
-          <LoadingBox/>
-        ) : status === 'failed' ? (
+        {status === "idle" ? null : status === "loading" ? (
+          <LoadingBox />
+        ) : status === "failed" ? (
           <MessageBox variant="danger">{error.message}</MessageBox>
         ) : (
           <ul className="carta cuerpo-carta">
@@ -46,7 +55,7 @@ export default function Seller(props) {
                     className="pequeño"
                     src={user.seller.logo}
                     alt={user.seller.name}
-                    onError={(e) => e.target.src = '/images/fallback.jpg'}
+                    onError={(e) => (e.target.src = "/images/fallback.jpg")}
                   ></img>
                 </div>
                 <div className="p-1">
@@ -68,15 +77,15 @@ export default function Seller(props) {
         )}
       </div>
       <div className="extrafoco">
-        {productsStatus === 'idle' ? (
-          null
-        ) : productsStatus === 'loading' ? ( 
-          <LoadingBox variant="big"/>
-        ) : productsStatus === 'failed' ? (
+        {productsStatus === "idle" ? null : productsStatus === "loading" ? (
+          <LoadingBox variant="big" />
+        ) : productsStatus === "failed" ? (
           <MessageBox variant="danger">{errorProducts.message}</MessageBox>
         ) : (
           <>
-            {products.length === 0 && <MessageBox>Sin productos a la venta</MessageBox>}
+            {products.length === 0 && (
+              <MessageBox>Sin productos a la venta</MessageBox>
+            )}
             <div className="container centro">
               {products.map((product) => (
                 <Home key={product._id} product={product}></Home>

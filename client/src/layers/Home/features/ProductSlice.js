@@ -1,203 +1,237 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   body: [],
-  status: 'idle',
+  status: "idle",
   error: null,
   errorCreate: null,
-  statusCreate: 'idle',
-  createdProduct : null,
+  statusCreate: "idle",
+  createdProduct: null,
   errorDelete: null,
-  statusDelete: 'idle',
-  deletedProduct : null,
-  categoriesStatus: 'idle',
+  statusDelete: "idle",
+  deletedProduct: null,
+  categoriesStatus: "idle",
   categories: [],
-  categoriesError: null
-}
+  categoriesError: null,
+};
 
-export const fetchProducts = createAsyncThunk('product/fetchProducts', async (params) => {
-  const { seller, name, category } = params
-  let url = `/api/products?seller=${seller || ''}&name=${name || ''}&category=${category || ''}`
-  const response = await fetch(url);
-  const data = await response.json();
-  if(!response.ok) throw data.error;
-  return data;
-})
+export const fetchProducts = createAsyncThunk(
+  "product/fetchProducts",
+  async (params) => {
+    const { seller, name, category, order, min, max, rating } = params;
+    const minQuery = min ? `min=${min}` : "min=0";
+    const sellerQuery = seller ? `&seller=${seller}` : "";
+    const nameQuery = name ? `&name=${name}` : "";
+    const categoryQuery = category ? `&category=${category}` : "";
+    const orderQuery = order ? `&order=${order}` : "";
+    const maxQuery = max ? `&max=${max}` : "";
+    const ratingQuery = rating ? `&rating=${rating}` : "";
+    let url = `/api/products?${minQuery}${sellerQuery}${nameQuery}${categoryQuery}${orderQuery}${maxQuery}${ratingQuery}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!response.ok) throw data.error;
+    return data;
+  }
+);
 
-export const createProduct = createAsyncThunk('product/createProduct', async (params, {getState}) => {
-
-  const {
+export const createProduct = createAsyncThunk(
+  "product/createProduct",
+  async (params, { getState }) => {
+    const {
       user: { body },
-  } = getState();
+    } = getState();
 
-  const { _id, name, price, image, category, brand, countInStock, description } = params
+    const {
+      _id,
+      name,
+      price,
+      image,
+      category,
+      brand,
+      countInStock,
+      description,
+    } = params;
 
-  const url = _id ? `/api/products/${_id}` : "/api/products";
-  const method = _id ? 'PUT' : 'POST';
-  const headers = { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${body.token}`
-                  }
-  const main = _id ? { name, price, image, category, brand, countInStock, description } : {}
+    const url = _id ? `/api/products/${_id}` : "/api/products";
+    const method = _id ? "PUT" : "POST";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${body.token}`,
+    };
+    const main = _id
+      ? { name, price, image, category, brand, countInStock, description }
+      : {};
 
-  const requestOptions = {
-    method,
-    headers,
-    body: JSON.stringify(main)
-  };
+    const requestOptions = {
+      method,
+      headers,
+      body: JSON.stringify(main),
+    };
 
-  const response = await fetch(url, requestOptions);
-  const data = await response.json();
-  if (!response.ok) {
-    const error = new Error(data.message)
-    error.name = response.status + '';
-    throw error  
-  } 
-  return data;
-})
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message);
+      error.name = response.status + "";
+      throw error;
+    }
+    return data;
+  }
+);
 
-export const deleteProduct = createAsyncThunk('product/deleteProduct', async (params, {getState}) => {
-
-  const {
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (params, { getState }) => {
+    const {
       user: { body },
-  } = getState();
+    } = getState();
 
-  const { _id } = params
+    const { _id } = params;
 
-  const url = `/api/products/${_id}`;
-  const method = 'DELETE';
-  const headers = { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${body.token}`
-                  }
+    const url = `/api/products/${_id}`;
+    const method = "DELETE";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${body.token}`,
+    };
 
-  const requestOptions = {
-    method,
-    headers,
-    body: JSON.stringify({})
-  };
+    const requestOptions = {
+      method,
+      headers,
+      body: JSON.stringify({}),
+    };
 
-  const response = await fetch(url, requestOptions);
-  const data = await response.json();
-  if (!response.ok) {
-    const error = new Error(data.message)
-    error.name = response.status + '';
-    throw error  
-  } 
-  return data;
-})
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message);
+      error.name = response.status + "";
+      throw error;
+    }
+    return data;
+  }
+);
 
-export const listCategories = createAsyncThunk('product/listCategories', async (params) => {
-  let url = `/api/products/categories`
-  const response = await fetch(url);
-  const data = await response.json();
-  if(!response.ok) throw data.error;
-  return data;
-})
+export const listCategories = createAsyncThunk(
+  "product/listCategories",
+  async (params) => {
+    let url = `/api/products/categories`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!response.ok) throw data.error;
+    return data;
+  }
+);
 
 const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   reducers: {
     resetCreatedProduct(state, action) {
-      state.statusCreate = 'idle';
+      state.statusCreate = "idle";
       state.errorCreate = null;
       state.createdProduct = {};
     },
     resetDeletedProduct(state, action) {
-      state.statusDelete = 'idle';
+      state.statusDelete = "idle";
       state.errorDelete = null;
       state.deletedProduct = {};
     },
     resetProductState(state, action) {
-      state.status = 'idle';
+      state.status = "idle";
       state.error = null;
       state.body = [];
     },
     resetCategories(state, action) {
-      state.categoriesStatus = 'idle'
-      state.categories = []
-      state.categoriesError = null
-    }
+      state.categoriesStatus = "idle";
+      state.categories = [];
+      state.categoriesError = null;
+    },
   },
   extraReducers: {
     [fetchProducts.pending]: (state, action) => {
-      state.status = 'loading'
+      state.status = "loading";
     },
     [fetchProducts.fulfilled]: (state, action) => {
-      state.status = 'succeeded'
+      state.status = "succeeded";
       // Add any fetched posts to the array
-      state.body = action.payload
+      state.body = action.payload;
     },
     [fetchProducts.rejected]: (state, action) => {
-      state.status = 'failed'
-      state.error = action.error
+      state.status = "failed";
+      state.error = action.error;
     },
     [createProduct.pending]: (state, action) => {
-      state.statusCreate = 'loading'
+      state.statusCreate = "loading";
     },
     [createProduct.fulfilled]: (state, action) => {
-      state.statusCreate = 'succeeded'
+      state.statusCreate = "succeeded";
       // Add any fetched posts to the array
-      state.createdProduct = action.payload
+      state.createdProduct = action.payload;
     },
     [createProduct.rejected]: (state, action) => {
-      state.statusCreate = 'failed'
-      state.errorCreate = action.error
+      state.statusCreate = "failed";
+      state.errorCreate = action.error;
     },
     [deleteProduct.pending]: (state, action) => {
-      state.statusDelete = 'loading'
+      state.statusDelete = "loading";
     },
     [deleteProduct.fulfilled]: (state, action) => {
-      state.statusDelete = 'succeeded'
+      state.statusDelete = "succeeded";
       // Add any fetched posts to the array
-      state.deletedProduct = action.payload
+      state.deletedProduct = action.payload;
     },
     [deleteProduct.rejected]: (state, action) => {
-      state.statusDelete = 'failed'
-      state.errorDelete = action.error
+      state.statusDelete = "failed";
+      state.errorDelete = action.error;
     },
     [listCategories.pending]: (state, action) => {
-      state.categoriesStatus = 'loading'
+      state.categoriesStatus = "loading";
     },
     [listCategories.fulfilled]: (state, action) => {
-      state.categoriesStatus = 'succeeded'
+      state.categoriesStatus = "succeeded";
       // Add any fetched posts to the array
-      state.categories = action.payload
+      state.categories = action.payload;
     },
     [listCategories.rejected]: (state, action) => {
-      state.categoriesStatus = 'failed'
-      state.categoriesError = action.error
-    }
-  }
-})
+      state.categoriesStatus = "failed";
+      state.categoriesError = action.error;
+    },
+  },
+});
 
-export const productState = state => state.product.body
+export const productState = (state) => state.product.body;
 
-export const productStatus = state => state.product.status;
+export const productStatus = (state) => state.product.status;
 
-export const productError = state => state.product.error;
+export const productError = (state) => state.product.error;
 
-export const createdProductState = state => state.product.createdProduct
+export const createdProductState = (state) => state.product.createdProduct;
 
-export const productStatusCreate = state => state.product.statusCreate;
+export const productStatusCreate = (state) => state.product.statusCreate;
 
-export const productErrorCreate = state => state.product.errorCreate;
+export const productErrorCreate = (state) => state.product.errorCreate;
 
-export const deletedProductState = state => state.product.deletedProduct
+export const deletedProductState = (state) => state.product.deletedProduct;
 
-export const productStatusDelete = state => state.product.statusDelete;
+export const productStatusDelete = (state) => state.product.statusDelete;
 
-export const productErrorDelete = state => state.product.errorDelete;
+export const productErrorDelete = (state) => state.product.errorDelete;
 
-export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
+export const singleProductState = (state, id) =>
+  state.product.body.find((product) => product._id === id);
 
-export const categoriesState = state => state.product.categories
+export const categoriesState = (state) => state.product.categories;
 
-export const categoriesStatus = state => state.product.categoriesStatus;
+export const categoriesStatus = (state) => state.product.categoriesStatus;
 
-export const categoriesError = state => state.product.categoriesError;
+export const categoriesError = (state) => state.product.categoriesError;
 
-export const { resetCreatedProduct, resetProductState, resetDeletedProduct, resetCategories } = productSlice.actions
+export const {
+  resetCreatedProduct,
+  resetProductState,
+  resetDeletedProduct,
+  resetCategories,
+} = productSlice.actions;
 
-export default productSlice.reducer
+export default productSlice.reducer;

@@ -48,27 +48,27 @@ Background image screenshot:
 Example of usage:
 
 ```javascript
-export const fetchUser = createAsyncThunk('user/fetchUser', async (params) => {
-    const {email, password, name} = params;
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-                            email, 
-                            password,
-                            name: name || undefined
-                          })
-    };
-    const url = name? "/api/users/register" : "/api/users/signin"
-    const response = await fetch(url, requestOptions);
-    const data = await response.json();
-    if (!response.ok) {
-      const error = new Error(data.message)
-      error.name = response.status + '';
-      throw error  
-    } 
-    return data;
-})
+export const fetchUser = createAsyncThunk("user/fetchUser", async (params) => {
+  const { email, password, name } = params;
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+      name: name || undefined,
+    }),
+  };
+  const url = name ? "/api/users/register" : "/api/users/signin";
+  const response = await fetch(url, requestOptions);
+  const data = await response.json();
+  if (!response.ok) {
+    const error = new Error(data.message);
+    error.name = response.status + "";
+    throw error;
+  }
+  return data;
+});
 ```
 
 ## Features

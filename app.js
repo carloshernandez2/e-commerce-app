@@ -17,7 +17,10 @@ const app = express()
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' ? process.env.LOCALHOST : ['http://localhost:3000', 'http://localhost:5000'], // <-- location of the react app were connecting to
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? process.env.LOCALHOST
+        : ['http://localhost:3000', 'http://localhost:5000'], // <-- location of the react app were connecting to
     credentials: true
   })
 )
@@ -26,11 +29,14 @@ app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 app.use(cookieParser())
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_abuela', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true
-})
+mongoose.connect(
+  process.env.MONGODB_URL || 'mongodb://localhost/postres_de_la_abuela',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  }
+)
 
 // app.use(express.static(path.join(__dirname, 'client/build')))
 if (process.env.NODE_ENV === 'production') {

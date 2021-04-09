@@ -1,12 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { carritoItems, carritoState, compraState, paymentMethodState, restoreCart, setMessage } from '../../Carrito/features/CarritoSlice';
-import CheckoutSteps from '../../Carrito/features/CheckoutSteps';
-import MessageBox from '../../Carrito/features/MessageBox';
-import { userState } from '../../SignIn/features/SignInSlice';
-import LoadingBox from '../features/LoadingBox';
-import { orderState, orderStatus, orderError, fetchOrder, resetOrder } from "../features/OrderSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import {
+  carritoItems,
+  carritoState,
+  compraState,
+  paymentMethodState,
+  restoreCart,
+  setMessage,
+} from "../../Carrito/features/CarritoSlice";
+import CheckoutSteps from "../../Carrito/features/CheckoutSteps";
+import MessageBox from "../../Carrito/features/MessageBox";
+import { userState } from "../../SignIn/features/SignInSlice";
+import LoadingBox from "../features/LoadingBox";
+import {
+  orderState,
+  orderStatus,
+  orderError,
+  fetchOrder,
+  resetOrder,
+} from "../features/OrderSlice";
 
 export default function PlaceOrder(props) {
   const cart = useSelector(carritoState);
@@ -19,8 +32,8 @@ export default function PlaceOrder(props) {
 
   useEffect(() => {
     if (!metodo) {
-        props.history.push('/pago');
-      }
+      props.history.push("/pago");
+    }
   }, [props.history, metodo]);
 
   const order = useSelector(orderState);
@@ -30,24 +43,22 @@ export default function PlaceOrder(props) {
   const dispatch = useDispatch();
 
   const toPrice = (num) => Number(num.toFixed(2)); // 5.123 => "5.12" => 5.12
-  const itemsPrice = toPrice(
-    cart.reduce((a, c) => a + c.qty * c.price, 0)
-  );
+  const itemsPrice = toPrice(cart.reduce((a, c) => a + c.qty * c.price, 0));
   const shippingPrice = itemsPrice > 100 ? toPrice(0) : toPrice(10);
   const taxPrice = toPrice(0.15 * itemsPrice);
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   const placeOrderHandler = () => {
-    const orderItems = cart.map((item => {
+    const orderItems = cart.map((item) => {
       return {
         name: item.name,
         qty: item.qty,
         image: item.image,
         price: item.price,
         product: item.product,
-        seller: item.seller
-      }
-    }))
+        seller: item.seller,
+      };
+    });
     const newOrder = {
       orderItems,
       shippingAddress: compra,
@@ -56,34 +67,35 @@ export default function PlaceOrder(props) {
       shippingPrice,
       taxPrice,
       totalPrice,
-    }
+    };
     dispatch(fetchOrder({ newOrder }));
   };
 
   useEffect(() => {
-
     if (status[0] === "idle") {
-      setLoading(false)
+      setLoading(false);
     }
 
     if (status[0] === "succeeded") {
-      setLoading(false)
+      setLoading(false);
       dispatch(resetOrder([]));
-      dispatch(setMessage({ text: 'Orden creada satisfactoriamente', type: 'success' }))
-      const param = order.order && order.order._id
+      dispatch(
+        setMessage({ text: "Orden creada satisfactoriamente", type: "success" })
+      );
+      const param = order.order && order.order._id;
       if (user) props.history.push(`/order/${param}`);
-      dispatch(restoreCart())
+      dispatch(restoreCart());
     }
 
     if (status[0] === "loading") {
-      setLoading(true)
+      setLoading(true);
     }
 
     if (status[0] === "failed") {
-      setLoading(false)
+      setLoading(false);
     }
   }, [dispatch, order, props.history, status, user]);
-  
+
   return (
     <div>
       <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
@@ -95,9 +107,8 @@ export default function PlaceOrder(props) {
                 <h2>Datos de compra</h2>
                 <p>
                   <strong>Name:</strong> {compra.fullName} <br />
-                  <strong>Dirección: </strong> {compra.address},{' '}
-                  {compra.city}, {compra.postalCode}
-                  , {compra.country}
+                  <strong>Dirección: </strong> {compra.address}, {compra.city},{" "}
+                  {compra.postalCode}, {compra.country}
                 </p>
               </div>
             </li>
@@ -184,10 +195,12 @@ export default function PlaceOrder(props) {
                   Realizar pedido
                 </button>
               </li>
-              {error.renderError && <MessageBox variant="danger">{error.renderError.message}</MessageBox>}
-              {loading && (
-                <LoadingBox />
+              {error.renderError && (
+                <MessageBox variant="danger">
+                  {error.renderError.message}
+                </MessageBox>
               )}
+              {loading && <LoadingBox />}
             </ul>
           </div>
         </div>

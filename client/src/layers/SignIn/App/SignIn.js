@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import MessageBox from '../../Carrito/features/MessageBox';
-import { fetchUser, userError, restoreState, userState } from '../features/SignInSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import MessageBox from "../../Carrito/features/MessageBox";
+import {
+  fetchUser,
+  userError,
+  restoreState,
+  userState,
+} from "../features/SignInSlice";
 
-import './SignIn.css';
+import "./SignIn.css";
 
 export default function SignIn(props) {
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const dispatch = useDispatch()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const error = useSelector(userError);
   const user = useSelector(userState);
 
   const redirect = props.location.search
-  ? props.location.search.split('=')[1]
-  : '/';
+    ? props.location.search.split("=")[1]
+    : "/";
 
   useEffect(() => {
     if (user) {
@@ -27,18 +31,18 @@ export default function SignIn(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(fetchUser({email, password}))
+    dispatch(fetchUser({ email, password }));
   };
 
   useEffect(() => {
-    dispatch(restoreState(null))
-  }, [dispatch, email, password])
+    dispatch(restoreState(null));
+  }, [dispatch, email, password]);
 
   useEffect(() => {
     return () => {
-        dispatch(restoreState(null));
-    }
-}, [dispatch])
+      dispatch(restoreState(null));
+    };
+  }, [dispatch]);
 
   return (
     <div>
@@ -47,9 +51,10 @@ export default function SignIn(props) {
           <h1>Registro</h1>
         </div>
         {error && (
-        <div className="container centro">
+          <div className="container centro">
             <MessageBox variant="danger">{error.message}</MessageBox>
-        </div>)}
+          </div>
+        )}
         <div>
           <label htmlFor="email">Correo</label>
           <input
@@ -81,10 +86,8 @@ export default function SignIn(props) {
         <div>
           <label />
           <div>
-            Nuevo usuario? {' '} 
-            <Link to={`/inscripcion?redirect=${redirect}`}>
-              Crea tu cuenta
-            </Link>
+            Nuevo usuario?{" "}
+            <Link to={`/inscripcion?redirect=${redirect}`}>Crea tu cuenta</Link>
           </div>
         </div>
       </form>

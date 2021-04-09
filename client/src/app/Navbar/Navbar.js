@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route } from 'react-router-dom'
-import { carritoItems } from '../../layers/Carrito/features/CarritoSlice';
-import MessageBox from '../../layers/Carrito/features/MessageBox';
-import { categoriesError, categoriesState, categoriesStatus, listCategories, resetCategories, resetProductState } from '../../layers/Home/features/ProductSlice';
-import SearchBox from '../../layers/Home/features/SearchBox';
-import LoadingBox from '../../layers/PlaceOrder/features/LoadingBox';
-import Name from '../../layers/SignIn/features/Name';
-import { userState } from '../../layers/SignIn/features/SignInSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Route } from "react-router-dom";
+import { carritoItems } from "../../layers/Carrito/features/CarritoSlice";
+import MessageBox from "../../layers/Carrito/features/MessageBox";
+import {
+  categoriesError,
+  categoriesState,
+  categoriesStatus,
+  listCategories,
+  resetCategories,
+  resetProductState,
+} from "../../layers/Home/features/ProductSlice";
+import SearchBox from "../../layers/Home/features/SearchBox";
+import LoadingBox from "../../layers/PlaceOrder/features/LoadingBox";
+import Name from "../../layers/SignIn/features/Name";
+import { userState } from "../../layers/SignIn/features/SignInSlice";
 
-import './NavBar.css';
+import "./NavBar.css";
 
 export function Navbar() {
-
   const cartItems = useSelector(carritoItems);
   const user = useSelector(userState);
   const error = useSelector(categoriesError);
@@ -21,19 +27,19 @@ export function Navbar() {
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(listCategories());
     return () => {
-        dispatch(resetCategories())
-    }
-  }, [dispatch])
+      dispatch(resetCategories());
+    };
+  }, [dispatch]);
 
   const handleClick = () => {
-    dispatch(resetProductState())
-    setSidebarIsOpen(false)
-  }
+    dispatch(resetProductState());
+    setSidebarIsOpen(false);
+  };
 
   return (
     <>
@@ -46,13 +52,13 @@ export function Navbar() {
           >
             <i className="fa fa-bars"></i>
           </button>
-          <Link to="/" className="link"><img src="/images/Free_Sample_By_Wix.png" alt="Logo"/></Link>
+          <Link to="/" className="link">
+            <img src="/images/Free_Sample_By_Wix.png" alt="Logo" />
+          </Link>
         </figure>
         <div>
           <Route
-            render={({ history }) => (
-              <SearchBox history={history}></SearchBox>
-            )}
+            render={({ history }) => <SearchBox history={history}></SearchBox>}
           ></Route>
         </div>
         <nav className="nav">
@@ -60,13 +66,11 @@ export function Navbar() {
             <li>
               <Link to="/cart" className="link">
                 Carrito
-                {cartItems > 0 && (
-                  <span className="badge">{cartItems}</span>
-                )}
+                {cartItems > 0 && <span className="badge">{cartItems}</span>}
               </Link>
             </li>
             <li>
-              <Name user={user}/>
+              <Name user={user} />
             </li>
             {user && user.isSeller && (
               <li>
@@ -76,10 +80,14 @@ export function Navbar() {
                   </Link>
                   <ul className="dropdown-content">
                     <li>
-                      <Link to="/productlist/seller" className="link">Productos</Link>
+                      <Link to="/productlist/seller" className="link">
+                        Productos
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/orderlist/seller" className="link">Pedidos</Link>
+                      <Link to="/orderlist/seller" className="link">
+                        Pedidos
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -93,16 +101,24 @@ export function Navbar() {
                   </Link>
                   <ul className="dropdown-content">
                     <li>
-                      <Link to="/dashboard" className="link">Tablero</Link>
+                      <Link to="/dashboard" className="link">
+                        Tablero
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/productlist" className="link">Productos</Link>
+                      <Link to="/productlist" className="link">
+                        Productos
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/orderlist"className="link">Pedidos</Link>
+                      <Link to="/orderlist" className="link">
+                        Pedidos
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/userlist"className="link">Usuarios</Link>
+                      <Link to="/userlist" className="link">
+                        Usuarios
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -111,7 +127,7 @@ export function Navbar() {
           </ul>
         </nav>
       </header>
-      <aside className={sidebarIsOpen ? 'open' : ''}>
+      <aside className={sidebarIsOpen ? "open" : ""}>
         <ul className="categories">
           <li>
             <strong>Categorias</strong>
@@ -123,11 +139,9 @@ export function Navbar() {
               <i className="fa fa-close"></i>
             </button>
           </li>
-          {status === 'idle' ? (
-            null
-          ) : status === 'loading' ? (
+          {status === "idle" ? null : status === "loading" ? (
             <LoadingBox />
-          ) : status === 'failed' ? (
+          ) : status === "failed" ? (
             <MessageBox variant="danger">{error.message}</MessageBox>
           ) : (
             categories.map((c) => (
@@ -145,5 +159,5 @@ export function Navbar() {
         </ul>
       </aside>
     </>
-  )
+  );
 }

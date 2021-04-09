@@ -1,115 +1,115 @@
 ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 .dropdown li {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 input,
 select,
 textarea,
 button {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 0.1rem #a4a4a4 solid;
-    font-size: 1rem;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 0.1rem #a4a4a4 solid;
+  font-size: 1rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button {
-    background-color: #f8f8f8;
-    cursor: pointer;
+  background-color: #f8f8f8;
+  cursor: pointer;
 }
 
 input:hover,
 select:hover,
 textarea:hover,
 button:hover {
-    border: 0.1rem #404040 solid;
+  border: 0.1rem #404040 solid;
 }
 
 button.primary {
-    background-color: #f0c040;
+  background-color: #f0c040;
 }
 
 button.block {
-    width: 100%;
+  width: 100%;
 }
 
 button.small {
-    font-size: 1.2rem;
-  }
+  font-size: 1.2rem;
+}
 
 .container.top {
-    align-items: flex-start;
+  align-items: flex-start;
 }
 
 .container.start {
-    justify-content: flex-start;
-  }
+  justify-content: flex-start;
+}
 
 .contenido-producto {
-    flex: 1 1 16rem;
-    margin: 0 10px;
+  flex: 1 1 16rem;
+  margin: 0 10px;
 }
 
 .foco {
-    flex: 2 1 32rem;
-    min-height: calc(100vh - 20vh - 50px);
+  flex: 2 1 32rem;
+  min-height: calc(100vh - 20vh - 50px);
 }
 
 .extrafoco {
-    flex: 32 1 48rem;
-  }
+  flex: 32 1 48rem;
+}
 
 .min-30 {
-    min-width: 30rem;
+  min-width: 30rem;
 }
 
 .p-1 {
-    padding: 1rem;
-  }
+  padding: 1rem;
+}
 
 img.grande {
-    width: 100%;
+  width: 100%;
 }
 
 img.pequeño {
-    max-width: 5rem;
-    width: 100%;
+  max-width: 5rem;
+  width: 100%;
 }
 
 .exito {
-    color: #20a020;
+  color: #20a020;
 }
 
 .error {
-    color: #a02020;
-  }
+  color: #a02020;
+}
 
 .alert {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    border: 0.1rem solid transparent;
-    border-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 0.1rem solid transparent;
+  border-radius: 0.5rem;
 }
 
 .alert-info {
-    color: #2020a0;
-    background-color: #e0e0ff;
+  color: #2020a0;
+  background-color: #e0e0ff;
 }
 
 .alert-danger {
-    color: #a02020;
-    background-color: #ffe0e0;
+  color: #a02020;
+  background-color: #ffe0e0;
 }
 
 .alert-success {
-    color: #20a020;
-    background-color: #eeffe0;
-  }
+  color: #20a020;
+  background-color: #eeffe0;
+}

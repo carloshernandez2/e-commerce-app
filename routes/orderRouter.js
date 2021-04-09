@@ -65,7 +65,11 @@ router.get(
     const order = await Order.findById(req.params.id)
     const userId = req.user._id
     const seller = isOrderSeller(order, userId)
-    if ((order && (`${req.user._id}` === `${order.user}`)) || req.user.isAdmin || seller) {
+    if (
+      (order && `${req.user._id}` === `${order.user}`) ||
+      req.user.isAdmin ||
+      seller
+    ) {
       res.send(order)
     } else {
       res.status(404).send({ message: 'Order Not Found' })

@@ -1,51 +1,55 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-
-import Rating from './Rating';
+import Rating from "./Rating";
 import { singleProductState } from "./ProductSlice";
 
 import "./Product.css";
-import MessageBox from '../../Carrito/features/MessageBox';
-import { singleCarritoState } from '../../Carrito/features/CarritoSlice';
+import MessageBox from "../../Carrito/features/MessageBox";
+import { singleCarritoState } from "../../Carrito/features/CarritoSlice";
 
 export function Product(props) {
-
-  const { id } = props.match.params
-  const cartItem = useSelector(state => singleCarritoState(state, id));
-  const product = useSelector(state => singleProductState(state, id));
+  const { id } = props.match.params;
+  const cartItem = useSelector((state) => singleCarritoState(state, id));
+  const product = useSelector((state) => singleProductState(state, id));
   const [qty, setQty] = useState((cartItem && cartItem.qty) || 1);
   const [error, setError] = useState(false);
 
   if (!product) {
-    return  <div className="container centro">
-              <MessageBox>No se pudo encontrar el producto</MessageBox>
-            </div>;
+    return (
+      <div className="container centro">
+        <MessageBox>No se pudo encontrar el producto</MessageBox>
+      </div>
+    );
   }
 
   const addToCartHandler = () => {
     const input = document.getElementById("qty");
-    input.validity.valid? props.history.push(`/cart/${product._id}?qty=${qty}`) : setError(true);
+    input.validity.valid
+      ? props.history.push(`/cart/${product._id}?qty=${qty}`)
+      : setError(true);
   };
 
   return (
     <div>
-      <Link to="/" className="link">De vuelta a productos</Link>
+      <Link to="/" className="link">
+        De vuelta a productos
+      </Link>
       <div className="container top">
         <div className="foco">
-          <img 
-          className="grande" 
-          src={`${product.image}`} 
-          alt={product.image}
-          onError={(e) => e.target.src = '/images/fallback.jpg'}
+          <img
+            className="grande"
+            src={`${product.image}`}
+            alt={product.image}
+            onError={(e) => (e.target.src = "/images/fallback.jpg")}
           ></img>
         </div>
         <div className="contenido-producto">
           <div className="carta cuerpo-carta">
             <ul>
               <li>
-                Vendedor{' '}
+                Vendedor{" "}
                 <h2>
                   <Link to={`/seller/${product.seller._id}`} className="link">
                     {product.seller.seller.name}
@@ -124,9 +128,14 @@ export function Product(props) {
                       </div>
                     </div>
                   </li>
-                  {error && <li>
-                    <MessageBox variant="danger">Verifica que la cantidad ingresada se encuentre disponible</MessageBox>
-                  </li>}
+                  {error && (
+                    <li>
+                      <MessageBox variant="danger">
+                        Verifica que la cantidad ingresada se encuentre
+                        disponible
+                      </MessageBox>
+                    </li>
+                  )}
                   <li>
                     <button
                       onClick={addToCartHandler}

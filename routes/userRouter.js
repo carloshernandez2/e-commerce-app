@@ -17,11 +17,13 @@ router.get(
   })
 )
 
-router.get('/seed', expressAsyncHandler(async (req, res) => {
-  // await User.remove({});
-  const createdUsers = await User.insertMany(data.users)
-  res.send({ createdUsers })
-})
+router.get(
+  '/seed',
+  expressAsyncHandler(async (req, res) => {
+    // await User.remove({});
+    const createdUsers = await User.insertMany(data.users)
+    res.send({ createdUsers })
+  })
 )
 
 router.post(
@@ -98,7 +100,8 @@ router.put(
       if (user.isSeller) {
         user.seller.name = req.body.sellerName || user.seller.name
         user.seller.logo = req.body.sellerLogo || user.seller.logo
-        user.seller.description = req.body.sellerDescription || user.seller.description
+        user.seller.description =
+          req.body.sellerDescription || user.seller.description
       }
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8)

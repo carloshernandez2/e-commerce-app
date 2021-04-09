@@ -1,41 +1,43 @@
 .centro {
-    justify-content: center;
+  justify-content: center;
 }
 
 img {
-    border-radius: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 img.medio {
-    max-width: 20rem;
-    padding: 0.1px;
-    width: 100%;
+  max-width: 20rem;
+  padding: 0.1px;
+  width: 100%;
 }
-  
+
 .carta {
-    border: 0.1rem #c0c0c0 solid;
-    background-color: #f8f8f8;
-    border-radius: 0.5rem;
-    margin: 1rem;
+  border: 0.1rem #c0c0c0 solid;
+  background-color: #f8f8f8;
+  border-radius: 0.5rem;
+  margin: 1rem;
 }
 
 .cuerpo-carta {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .cuerpo-carta > * {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .precio {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 .rating {
-    margin: 2px;
+  margin: 2px;
 }
 
-.fa-star:before, .fa-star-half-o:before, .fa-star-o:before {
-    color: #f0c040;
-    margin: 0.1rem;
+.fa-star:before,
+.fa-star-half-o:before,
+.fa-star-o:before {
+  color: #f0c040;
+  margin: 0.1rem;
 }
