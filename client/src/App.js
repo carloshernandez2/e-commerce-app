@@ -28,9 +28,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <header className="App-header container">
-          <Navbar />
-        </header>
+        <Navbar />
         <main className="App-main">
           <Switch>
             <Route path="/seller/:id" component={Seller}></Route>
@@ -44,7 +42,9 @@ function App() {
             <Route path="/placeorder" component={PlaceOrder} />
             <Route path="/orderhistory" component={OrderHistory} />
             <Route path="/profile" component={Profile} />
-            <Route exact path="/search/name/:name?" component={Search}></Route>
+            <Route exact path="/search/name/:name?" component={Search} />
+            <Route exact path="/search/category/:category" component={Search} />
+            <Route exact path="/search/category/:category/name/:name" component={Search} />
             <AdminRoute exact path="/productlist" component={ProductList} />
             <AdminRoute exact path="/orderlist" component={OrderList} />
             <AdminRoute path="/userlist" component={UserList} />

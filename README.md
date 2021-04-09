@@ -86,8 +86,6 @@ List of features:
 
 Project is: In progress.
 
-there are still some features left to implement, including admin view.
-
 ## Inspiration
 
 I was motivated by the big step it means to write my first e-commerce app.

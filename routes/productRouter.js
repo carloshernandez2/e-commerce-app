@@ -11,12 +11,15 @@ router.get(
   expressAsyncHandler(async (req, res) => {
     try {
       const name = req.query.name || ''
+      const category = req.query.category || ''
       const seller = req.query.seller || ''
       const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {}
       const sellerFilter = seller ? { seller } : {}
+      const categoryFilter = category ? { category } : {}
       const products = await Product.find({
         ...sellerFilter,
-        ...nameFilter
+        ...nameFilter,
+        ...categoryFilter
       }).populate(
         'seller',
         'seller.name seller.logo seller.rating seller.numReviews'
@@ -58,6 +61,14 @@ router.post(
       }
       res.status(500).send({ message: e.message })
     }
+  })
+)
+
+router.get(
+  '/categories',
+  expressAsyncHandler(async (req, res) => {
+    const categories = await Product.find().distinct('category')
+    res.send(categories)
   })
 )
 

@@ -10,11 +10,14 @@ const initialState = {
   errorDelete: null,
   statusDelete: 'idle',
   deletedProduct : null,
+  categoriesStatus: 'idle',
+  categories: [],
+  categoriesError: null
 }
 
 export const fetchProducts = createAsyncThunk('product/fetchProducts', async (params) => {
-  const { seller, name } = params
-  let url = `/api/products?seller=${seller || ''}&name=${name || ''}`
+  const { seller, name, category } = params
+  let url = `/api/products?seller=${seller || ''}&name=${name || ''}&category=${category || ''}`
   const response = await fetch(url);
   const data = await response.json();
   if(!response.ok) throw data.error;
@@ -84,6 +87,14 @@ export const deleteProduct = createAsyncThunk('product/deleteProduct', async (pa
   return data;
 })
 
+export const listCategories = createAsyncThunk('product/listCategories', async (params) => {
+  let url = `/api/products/categories`
+  const response = await fetch(url);
+  const data = await response.json();
+  if(!response.ok) throw data.error;
+  return data;
+})
+
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -103,6 +114,11 @@ const productSlice = createSlice({
       state.error = null;
       state.body = [];
     },
+    resetCategories(state, action) {
+      state.categoriesStatus = 'idle'
+      state.categories = []
+      state.categoriesError = null
+    }
   },
   extraReducers: {
     [fetchProducts.pending]: (state, action) => {
@@ -140,6 +156,18 @@ const productSlice = createSlice({
     [deleteProduct.rejected]: (state, action) => {
       state.statusDelete = 'failed'
       state.errorDelete = action.error
+    },
+    [listCategories.pending]: (state, action) => {
+      state.categoriesStatus = 'loading'
+    },
+    [listCategories.fulfilled]: (state, action) => {
+      state.categoriesStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.categories = action.payload
+    },
+    [listCategories.rejected]: (state, action) => {
+      state.categoriesStatus = 'failed'
+      state.categoriesError = action.error
     }
   }
 })
@@ -164,6 +192,12 @@ export const productErrorDelete = state => state.product.errorDelete;
 
 export const singleProductState = (state, id) => state.product.body.find((product) => product._id === id)
 
-export const { resetCreatedProduct, resetProductState, resetDeletedProduct } = productSlice.actions
+export const categoriesState = state => state.product.categories
+
+export const categoriesStatus = state => state.product.categoriesStatus;
+
+export const categoriesError = state => state.product.categoriesError;
+
+export const { resetCreatedProduct, resetProductState, resetDeletedProduct, resetCategories } = productSlice.actions
 
 export default productSlice.reducer
