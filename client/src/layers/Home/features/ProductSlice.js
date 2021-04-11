@@ -13,6 +13,9 @@ const initialState = {
   categoriesStatus: "idle",
   categories: [],
   categoriesError: null,
+  review: null,
+  reviewStatus: 'idle',
+  reviewError: null
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -123,6 +126,39 @@ export const listCategories = createAsyncThunk(
   }
 );
 
+export const createReviewProduct = createAsyncThunk(
+  "product/createReviewProduct",
+  async (params, { getState }) => {
+    const {
+      user: { body }
+    } = getState();
+
+    const { productId, review } = params;
+
+    const url = `/api/products/${productId}/reviews`;
+    const method = "POST";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${body.token}`,
+    };
+
+    const requestOptions = {
+      method,
+      headers,
+      body: JSON.stringify(review),
+    };
+
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message);
+      error.name = response.status + "";
+      throw error;
+    }
+    return data;
+  }
+);
+
 const productSlice = createSlice({
   name: "product",
   initialState,
@@ -147,6 +183,11 @@ const productSlice = createSlice({
       state.categories = [];
       state.categoriesError = null;
     },
+    productReviewReset(state, action) {
+      state.reviewStatus = "idle";
+      state.review = null;
+      state.reviewError = null;
+    }
   },
   extraReducers: {
     [fetchProducts.pending]: (state, action) => {
@@ -197,6 +238,18 @@ const productSlice = createSlice({
       state.categoriesStatus = "failed";
       state.categoriesError = action.error;
     },
+    [createReviewProduct.pending]: (state, action) => {
+      state.reviewStatus = "loading";
+    },
+    [createReviewProduct.fulfilled]: (state, action) => {
+      state.reviewStatus = "succeeded";
+      // Add any fetched posts to the array
+      state.review = action.payload;
+    },
+    [createReviewProduct.rejected]: (state, action) => {
+      state.reviewStatus = "failed";
+      state.reviewError = action.error;
+    },
   },
 });
 
@@ -227,11 +280,18 @@ export const categoriesStatus = (state) => state.product.categoriesStatus;
 
 export const categoriesError = (state) => state.product.categoriesError;
 
+export const productReview = (state) => state.product.review;
+
+export const productReviewStatus = (state) => state.product.reviewStatus;
+
+export const productReviewError = (state) => state.product.reviewError;
+
 export const {
   resetCreatedProduct,
   resetProductState,
   resetDeletedProduct,
   resetCategories,
+  productReviewReset
 } = productSlice.actions;
 
 export default productSlice.reducer;

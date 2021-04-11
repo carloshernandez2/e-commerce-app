@@ -172,4 +172,34 @@ router.put(
   })
 )
 
+router.post(
+  '/:id/reviews',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const userId = req.params.id
+    const user = await User.findById(userId)
+    if (user) {
+      if (user.seller.reviews.find((x) => x.name === req.user.name)) {
+        return res
+          .status(400)
+          .send({ message: 'Ya calificaste' })
+      }
+      const review = {
+        name: req.user.name,
+        rating: Number(req.body.rating),
+        comment: req.body.comment
+      }
+      user.seller.reviews.push(review)
+      user.seller.numReviews = user.seller.reviews.length
+      user.seller.rating =
+        user.seller.reviews.reduce((a, c) => c.rating + a, 0) /
+        user.seller.reviews.length
+      const updatedUser = await user.save()
+      res.status(201).send(updatedUser.seller.reviews[updatedUser.seller.reviews.length - 1])
+    } else {
+      res.status(404).send({ message: 'user Not Found' })
+    }
+  })
+)
+
 module.exports = router

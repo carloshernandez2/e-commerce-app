@@ -72,7 +72,7 @@ function AppProducts() {
           <MessageBox variant="danger">{errorSellers}</MessageBox>
         ) : (
           <>
-            <h2>Top Sellers</h2>
+            <h2>Vendedores mejor calificados</h2>
             <Carousel showArrows autoPlay showThumbs={false}>
               {sellers.map((seller) => (
                 <div key={seller._id}>
@@ -90,7 +90,7 @@ function AppProducts() {
             </Carousel>
           </>
         )}
-        <h2>Featured Products</h2>
+        <h2>Productos a la venta</h2>
         <div className="container centro">
           {products.map((product) => (
             <Home key={product._id} product={product} />

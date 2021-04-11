@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const reviewSchema = require('./reviewSchema')
 
 const userSchema = new mongoose.Schema(
   {
@@ -12,7 +13,8 @@ const userSchema = new mongoose.Schema(
       logo: String,
       description: String,
       rating: { type: Number, default: 0, required: true },
-      numReviews: { type: Number, default: 0, required: true }
+      numReviews: { type: Number, default: 0, required: true },
+      reviews: [reviewSchema]
     }
   },
   {

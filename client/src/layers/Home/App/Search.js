@@ -60,34 +60,29 @@ export default function Search(props) {
     return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}`;
   };
 
-  return status === "idle" ? null : status === "loading" ? (
-    <LoadingBox variant="big" />
-  ) : status === "failed" ? (
-    <MessageBox variant="danger">{error.message}</MessageBox>
-  ) : (
+  return (
     <div>
       <div className="container top">
-        <div className="contenido-producto">
-          <div>
-            Sort by{" "}
-            <select
-              value={order}
-              onChange={(e) => {
-                props.history.push(getFilterUrl({ order: e.target.value }));
-              }}
-            >
-              <option value="newest">Mas reciente</option>
-              <option value="lowest">Precio: bajo a alto</option>
-              <option value="highest">Pricio: alto a bajo</option>
-              <option value="toprated">Calificación</option>
-            </select>
-          </div>
-          {statusCategories === "idle" ? null : statusCategories ===
-            "loading" ? (
-            <LoadingBox />
-          ) : statusCategories === "failed" ? (
-            <MessageBox variant="danger">{errorCategories.message}</MessageBox>
-          ) : (
+        {statusCategories === "idle" ? null : statusCategories === "loading" ? (
+          <LoadingBox />
+        ) : statusCategories === "failed" ? (
+          <MessageBox variant="danger">{errorCategories.message}</MessageBox>
+        ) : (
+          <div className="contenido-producto">
+            <div>
+              Sort by{" "}
+              <select
+                value={order}
+                onChange={(e) => {
+                  props.history.push(getFilterUrl({ order: e.target.value }));
+                }}
+              >
+                <option value="newest">Mas reciente</option>
+                <option value="lowest">Precio: bajo a alto</option>
+                <option value="highest">Pricio: alto a bajo</option>
+                <option value="toprated">Calificación</option>
+              </select>
+            </div>
             <div className="carta cuerpo-carta">
               <div>{products.length} Resultados</div>
               <h3>Departamento</h3>
@@ -148,18 +143,24 @@ export default function Search(props) {
                 </ul>
               </div>
             </div>
-          )}
-        </div>
-        <div className="extrafoco">
-          {products.length === 0 && (
-            <MessageBox>No se encontraron productos</MessageBox>
-          )}
-          <div className="container centro">
-            {products.map((product) => (
-              <Home key={product._id} product={product}></Home>
-            ))}
           </div>
-        </div>
+        )}
+        {status === "idle" ? null : status === "loading" ? (
+          <div className="extrafoco"><LoadingBox variant="big" /></div>
+        ) : status === "failed" ? (
+          <div className="extrafoco"><MessageBox variant="danger">{error.message}</MessageBox></div>
+        ) : (
+          <div className="extrafoco">
+            {products.length === 0 && (
+              <MessageBox>No se encontraron productos</MessageBox>
+            )}
+            <div className="container centro">
+              {products.map((product) => (
+                <Home key={product._id} product={product}></Home>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,9 @@ const initialState = {
   users: [],
   usersStatus: "idle",
   usersError: null,
+  review: null,
+  reviewStatus: 'idle',
+  reviewError: null
 };
 
 export const fetchUser = createAsyncThunk(
@@ -136,6 +139,39 @@ export const getUsers = createAsyncThunk(
   }
 );
 
+export const createReviewSeller = createAsyncThunk(
+  "product/createReviewSeller",
+  async (params, { getState }) => {
+    const {
+      user: { body }
+    } = getState();
+
+    const { sellerId, review } = params;
+
+    const url = `/api/users/${sellerId}/reviews`;
+    const method = "POST";
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${body.token}`,
+    };
+
+    const requestOptions = {
+      method,
+      headers,
+      body: JSON.stringify(review),
+    };
+
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message);
+      error.name = response.status + "";
+      throw error;
+    }
+    return data;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -160,6 +196,11 @@ const userSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
+    sellerReviewReset(state, action) {
+      state.reviewStatus = "idle";
+      state.review = null;
+      state.reviewError = null;
+    }
   },
   extraReducers: {
     [fetchUser.pending]: (state, action) => {
@@ -199,6 +240,18 @@ const userSlice = createSlice({
       state.usersStatus = "failed";
       state.usersError = action.error;
     },
+    [createReviewSeller.pending]: (state, action) => {
+      state.reviewStatus = "loading";
+    },
+    [createReviewSeller.fulfilled]: (state, action) => {
+      state.reviewStatus = "succeeded";
+      // Add any fetched posts to the array
+      state.review = action.payload;
+    },
+    [createReviewSeller.rejected]: (state, action) => {
+      state.reviewStatus = "failed";
+      state.reviewError = action.error;
+    },
   },
 });
 
@@ -223,11 +276,18 @@ export const usersStatus = (state) => state.user.usersStatus;
 
 export const usersError = (state) => state.user.usersError;
 
+export const sellerReview = (state) => state.user.review;
+
+export const sellerReviewStatus = (state) => state.user.reviewStatus;
+
+export const sellerReviewError = (state) => state.user.reviewError;
+
 export const {
   restoreState,
   signOut,
   restoreModifiedUser,
   restoreUsers,
+  sellerReviewReset
 } = userSlice.actions;
 
 export default userSlice.reducer;

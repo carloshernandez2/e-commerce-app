@@ -1,10 +1,13 @@
 /* Search */
 .search button {
+  height: 3rem;
   border-radius: 0 0.3rem 0.3rem 0;
   border-right: none;
   margin-right: 0.3rem;
 }
 .search input {
+  height: 3rem;
+  width: 10rem;
   border-radius: 0.3rem 0 0 0.3rem;
   border-right: none;
   margin-left: 0.3rem;

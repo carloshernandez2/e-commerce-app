@@ -1,28 +1,32 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Rating from "./Rating";
-import { singleProductState } from "./ProductSlice";
+import {
+  createReviewProduct,
+  fetchProducts,
+  productReviewError,
+  productReviewReset,
+  productReviewStatus,
+  singleProductState,
+} from "./ProductSlice";
 
 import "./Product.css";
 import MessageBox from "../../Carrito/features/MessageBox";
 import { singleCarritoState } from "../../Carrito/features/CarritoSlice";
+import Review from "../../SignIn/features/Review";
 
 export function Product(props) {
   const { id } = props.match.params;
+
   const cartItem = useSelector((state) => singleCarritoState(state, id));
   const product = useSelector((state) => singleProductState(state, id));
+
   const [qty, setQty] = useState((cartItem && cartItem.qty) || 1);
   const [error, setError] = useState(false);
 
-  if (!product) {
-    return (
-      <div className="container centro">
-        <MessageBox>No se pudo encontrar el producto</MessageBox>
-      </div>
-    );
-  }
+  const dispatch = useDispatch();
 
   const addToCartHandler = () => {
     const input = document.getElementById("qty");
@@ -31,7 +35,19 @@ export function Product(props) {
       : setError(true);
   };
 
-  return (
+  const createReview = (id, rating, comment) => {
+    dispatch(createReviewProduct({ productId: id, review: { rating, comment } }));
+  }
+
+  const showResults = () => {
+    dispatch(fetchProducts({}));
+  }
+
+  return !product ? (
+    <div className="container centro">
+      <MessageBox>No se pudo encontrar el producto</MessageBox>
+    </div>
+  ) : (
     <div>
       <Link to="/" className="link">
         De vuelta a productos
@@ -149,6 +165,35 @@ export function Product(props) {
             </ul>
           </div>
         </div>
+      </div>
+      <div>
+        <h2 id="reviews">Calificaciones</h2>
+        {product.reviews.length === 0 && (
+          <MessageBox>no hay calificación</MessageBox>
+        )}
+        <ul className="container centro">
+          {product.reviews.map((review) => (
+            <li key={review._id} className="carta cuerpo-carta">
+              <strong>{review.name}</strong>
+              <Rating rating={review.rating} caption=" " />
+              <p>{review.createdAt.substring(0, 10)}</p>
+              <p>{review.comment}</p>
+            </li>
+          ))}
+        </ul>
+        <ul>
+          <li>
+            <Review 
+            createReview={createReview} 
+            showResults={showResults} 
+            id={id}
+            reviewStatus={productReviewStatus}
+            reviewError={productReviewError}
+            reviewReset={productReviewReset}
+            type="Producto"
+            />
+          </li>
+        </ul>
       </div>
     </div>
   );
