@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import Rating from "./Rating";
+import Rating from "../../../app/components/Rating";
 import {
   createReviewProduct,
   fetchProducts,
@@ -13,9 +13,9 @@ import {
 } from "./ProductSlice";
 
 import "./Product.css";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import { singleCarritoState } from "../../Carrito/features/CarritoSlice";
-import Review from "../../SignIn/features/Review";
+import Review from "../../../app/components/Review";
 
 export function Product(props) {
   const { id } = props.match.params;

@@ -1,6 +1,7 @@
 const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const data = require('../data.js')
+const User = require('../models/userModel.js')
 const Product = require('../models/productModel.js')
 const { isAuth, isSellerOrAdmin } = require('../middleware/utils.js')
 
@@ -10,6 +11,8 @@ router.get(
   '/',
   expressAsyncHandler(async (req, res) => {
     try {
+      const pageSize = 3
+      const page = Number(req.query.pageNumber) || 1
       const name = req.query.name || ''
       const category = req.query.category || ''
       const seller = req.query.seller || ''
@@ -39,6 +42,13 @@ router.get(
             : order === 'toprated'
               ? { rating: -1 }
               : { _id: -1 }
+      const count = await Product.count({
+        ...sellerFilter,
+        ...nameFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter
+      })
       const products = await Product.find({
         ...sellerFilter,
         ...nameFilter,
@@ -51,7 +61,9 @@ router.get(
           'seller.name seller.logo seller.rating seller.numReviews'
         )
         .sort(sortOrder)
-      res.send(products)
+        .skip(pageSize * (page - 1))
+        .limit(pageSize)
+      res.send({ products, page, pages: Math.ceil(count / pageSize) })
     } catch (e) {
       res.status(500).json({ error: e })
     }
@@ -141,8 +153,19 @@ router.get(
   expressAsyncHandler(async (req, res) => {
     // await Product.remove({});
     try {
-      const createdProducts = await Product.insertMany(data.products)
-      res.send({ createdProducts })
+      const seller = await User.findOne({ isSeller: true })
+      if (seller) {
+        const products = data.products.map((product) => ({
+          ...product,
+          seller: seller._id
+        }))
+        const createdProducts = await Product.insertMany(products)
+        res.send({ createdProducts })
+      } else {
+        res
+          .status(500)
+          .send({ message: 'No seller found. first run /api/users/seed' })
+      }
     } catch (e) {
       res.json({ message: e.message })
     }

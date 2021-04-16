@@ -1,14 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signOut, userStatus } from "./SignInSlice";
 
-import "./Name.css";
+import "./css/Name.css";
 
 import { Link } from "react-router-dom";
-import { restoreCart } from "../../Carrito/features/CarritoSlice";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import LoadingBox from "./LoadingBox";
+import { signOut, userStatus } from "../../layers/SignIn/features/SignInSlice";
+import { restoreCart } from "../../layers/Carrito/features/CarritoSlice";
 
 function Name(props) {
+  
   const { user } = props;
 
   const status = useSelector(userStatus);

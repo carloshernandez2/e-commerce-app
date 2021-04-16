@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import { userState } from "../../SignIn/features/SignInSlice";
 import {
   deleteUpdateOrder,
@@ -14,7 +14,7 @@ import {
   resetModified,
   resetOrder,
 } from "../features/OrderSlice";
-import LoadingBox from "../features/LoadingBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import { PayPalButton } from "../features/PayPalButton";
 import {
   messageState,

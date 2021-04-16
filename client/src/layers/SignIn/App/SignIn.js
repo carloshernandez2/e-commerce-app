@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import {
   fetchUser,
   userError,

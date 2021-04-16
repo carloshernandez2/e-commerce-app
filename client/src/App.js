@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import AdminRoute from "./layers/SignIn/features/AdminRoute";
+import AdminRoute from "./app/components/AdminRoute";
 
 import "./App.css";
 
@@ -19,9 +19,12 @@ import ProductList from "./layers/Home/App/ProductList";
 import OrderList from "./layers/PlaceOrder/App/OrderList";
 import UserList from "./layers/SignIn/App/UserList";
 import UserEdit from "./layers/SignIn/App/UserEdit";
-import SellerRoute from "./layers/Home/features/SellerRoute";
+import SellerRoute from "./app/components/SellerRoute";
+import PrivateRoute from "./app/components/PrivateRoute";
 import Seller from "./layers/SignIn/App/Seller";
 import Search from "./layers/Home/App/Search";
+import MapScreen from "./layers/Carrito/App/Map";
+import Dashboard from "./layers/PlaceOrder/App/Dashboard";
 
 function App() {
   return (
@@ -50,13 +53,16 @@ function App() {
             />
             <Route
               exact
-              path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order"
+              path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order/pageNumber/:pageNumber"
               component={Search}
             />
+            <PrivateRoute path="/map" component={MapScreen} />
             <AdminRoute exact path="/productlist" component={ProductList} />
+            <AdminRoute exact path="/productlist/pageNumber/:pageNumber"component={ProductList} />
             <AdminRoute exact path="/orderlist" component={OrderList} />
             <AdminRoute path="/userlist" component={UserList} />
             <AdminRoute path="/user/:id/edit" component={UserEdit} />
+            <AdminRoute path="/dashboard" component={Dashboard} />
             <SellerRoute path="/productlist/seller" component={ProductList} />
             <SellerRoute path="/orderlist/seller" component={OrderList} />
             <Redirect to="/products" />

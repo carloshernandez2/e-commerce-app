@@ -11,8 +11,8 @@ import {
   usersState,
   usersStatus,
 } from "../features/SignInSlice";
-import MessageBox from "../../Carrito/features/MessageBox";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import MessageBox from "../../../app/components/MessageBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 
 export default function UserList(props) {
   const error = useSelector(usersError);

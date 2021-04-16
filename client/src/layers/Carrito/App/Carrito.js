@@ -10,7 +10,7 @@ import {
   messageState,
   resetMessage,
 } from "../features/CarritoSlice";
-import MessageBox from "../features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 
 export default function Carrito(props) {
   const id = props.match.params.id;

@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { compraState, guardarCompra } from "../features/CarritoSlice";
+import {
+  addressState,
+  compraState,
+  guardarCompra,
+} from "../features/CarritoSlice";
 import { userState } from "../../SignIn/features/SignInSlice";
-import CheckoutSteps from "../features/CheckoutSteps";
+import CheckoutSteps from "../../../app/components/CheckoutSteps";
 
 export default function Compra(props) {
   const user = useSelector(userState);
   const compra = useSelector(compraState);
+  const addressMap = useSelector(addressState);
+  const shippingAddress = compra.shippingAddress || {} ;
+  const [lat, setLat] = useState(shippingAddress.lat);
+  const [lng, setLng] = useState(shippingAddress.lng);
   const [fullName, setFullName] = useState(compra.fullName || "");
   const [address, setAddress] = useState(compra.address || "");
   const [city, setCity] = useState(compra.city || "");
@@ -22,8 +30,47 @@ export default function Compra(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(guardarCompra({ fullName, address, city, postalCode, country }));
-    props.history.push("/pago");
+    const newLat = addressMap ? addressMap.lat : lat;
+    const newLng = addressMap ? addressMap.lng : lng;
+    if (addressMap) {
+      setLat(addressMap.lat);
+      setLng(addressMap.lng);
+    }
+    let moveOn = true;
+    if (!newLat || !newLng) {
+      moveOn = window.confirm(
+        "No colocaste una ubicación en el mapa. Continuar?"
+      );
+    }
+    if (moveOn) {
+      dispatch(
+        guardarCompra({
+          fullName,
+          address,
+          city,
+          postalCode,
+          country,
+          lat: newLat,
+          lng: newLng,
+        })
+      );
+      props.history.push("/pago");
+    }
+  };
+  
+  const chooseOnMap = () => {
+    dispatch(
+      guardarCompra({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+        lat,
+        lng,
+      })
+    );
+    props.history.push("/map");
   };
 
   return (
@@ -87,6 +134,12 @@ export default function Compra(props) {
             onChange={(e) => setCountry(e.target.value)}
             required
           ></input>
+        </div>
+        <div>
+          <label htmlFor="chooseOnMap">Ubicación</label>
+          <button type="button" onClick={chooseOnMap}>
+            Escoger en el mapa
+          </button>
         </div>
         <div>
           <label />

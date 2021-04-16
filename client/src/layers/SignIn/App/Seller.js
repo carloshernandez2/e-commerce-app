@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import Home from "../../Home/features/Home";
 import {
   fetchProducts,
@@ -9,9 +9,9 @@ import {
   productStatus,
   resetProductState,
 } from "../../Home/features/ProductSlice";
-import Rating from "../../Home/features/Rating";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
-import Review from "../features/Review";
+import Rating from "../../../app/components/Rating";
+import LoadingBox from "../../../app/components/LoadingBox";
+import Review from "../../../app/components/Review";
 import {
   createReviewSeller,
   getUsers,

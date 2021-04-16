@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import MessageBox from "../../Carrito/features/MessageBox";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
-import { userState } from "./SignInSlice";
+import { userState } from "../../layers/SignIn/features/SignInSlice";
+import LoadingBox from "./LoadingBox";
+import MessageBox from "./MessageBox";
 
 export default function Review(props) {
 
@@ -84,7 +84,7 @@ export default function Review(props) {
     </form>
   ) : (
     <MessageBox>
-      Porfavor <Link to="/signin">Regístrate</Link> para dar una calificación
+      <div>Porfavor <Link to="/registro" className="link">Regístrate</Link> para dar una calificación</div>
     </MessageBox>
   );
 }

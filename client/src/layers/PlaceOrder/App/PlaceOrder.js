@@ -9,10 +9,10 @@ import {
   restoreCart,
   setMessage,
 } from "../../Carrito/features/CarritoSlice";
-import CheckoutSteps from "../../Carrito/features/CheckoutSteps";
-import MessageBox from "../../Carrito/features/MessageBox";
+import CheckoutSteps from "../../../app/components/CheckoutSteps";
+import MessageBox from "../../../app/components/MessageBox";
 import { userState } from "../../SignIn/features/SignInSlice";
-import LoadingBox from "../features/LoadingBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import {
   orderState,
   orderStatus,

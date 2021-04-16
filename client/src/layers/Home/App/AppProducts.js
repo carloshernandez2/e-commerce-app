@@ -4,20 +4,20 @@ import { Route, Switch, useRouteMatch, Redirect, Link } from "react-router-dom";
 
 import Home from "../features/Home";
 import { Product } from "../features/Product";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import {
   fetchProducts,
   productState,
   resetProductState,
+  productStatus,
+  productError
 } from "../features/ProductSlice";
-import { productStatus } from "../features/ProductSlice";
-import { productError } from "../features/ProductSlice";
 
 import "./AppProducts.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import { Carousel } from "react-responsive-carousel";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import ProductEdit from "./ProductEdit";
 import {
   getUsers,
@@ -90,7 +90,7 @@ function AppProducts() {
             </Carousel>
           </>
         )}
-        <h2>Productos a la venta</h2>
+        <h2>Publicados recientemente</h2>
         <div className="container centro">
           {products.map((product) => (
             <Home key={product._id} product={product} />

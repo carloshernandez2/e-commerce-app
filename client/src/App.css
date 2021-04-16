@@ -14,7 +14,6 @@
 .App-header.container {
   grid-area: App-header;
   background-color: yellow;
-  max-height: 21vh;
 }
 
 .App-main {

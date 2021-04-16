@@ -6,8 +6,8 @@ import {
   uploadImage,
   uploadStatus,
 } from "../../Carrito/features/CarritoSlice";
-import MessageBox from "../../Carrito/features/MessageBox";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import MessageBox from "../../../app/components/MessageBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import {
   createdProductState,
   createProduct,

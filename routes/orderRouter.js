@@ -1,7 +1,15 @@
 const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const Order = require('../models/orderModel.js')
-const { isAuth, isSellerOrAdmin, isAdmin } = require('../middleware/utils.js')
+const {
+  isAuth,
+  isSellerOrAdmin,
+  isAdmin,
+  mailgun,
+  payOrderEmailTemplate
+} = require('../middleware/utils.js')
+const User = require('../models/userModel.js')
+const Product = require('../models/productModel.js')
 const { findSellers, isOrderSeller } = require('../middleware/helperMethods')
 
 const router = express.Router()
@@ -18,6 +26,50 @@ router.get(
       'name'
     )
     res.send(orders)
+  })
+)
+
+router.get(
+  '/summary',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const orders = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          numOrders: { $sum: 1 },
+          totalSales: { $sum: '$totalPrice' }
+        }
+      }
+    ])
+    const users = await User.aggregate([
+      {
+        $group: {
+          _id: null,
+          numUsers: { $sum: 1 }
+        }
+      }
+    ])
+    const dailyOrders = await Order.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          orders: { $sum: 1 },
+          sales: { $sum: '$totalPrice' }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ])
+    const productCategories = await Product.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 }
+        }
+      }
+    ])
+    res.send({ users, orders, dailyOrders, productCategories })
   })
 )
 
@@ -83,6 +135,8 @@ router.put(
   expressAsyncHandler(async (req, res) => {
     try {
       const order = await Order.findById(req.params.id)
+        .populate('user', 'email name')
+        .populate('sellers.seller', 'email name')
       const paymentResult = req.body.container
       if (order) {
         order.isPaid = true
@@ -94,6 +148,25 @@ router.put(
           email_address: paymentResult.payer.email_address
         }
         const updatedOrder = await order.save()
+        const seller = order.sellers[0].seller
+        mailgun()
+          .messages()
+          .send(
+            {
+              from: 'Postres de la abuela <postmaster@heiotti.tech>',
+              to: `${order.user.name} <${order.user.email}>`,
+              cc: `${seller.email}`,
+              subject: `Nuevo pedido ${order._id}`,
+              html: payOrderEmailTemplate(order)
+            },
+            (error, body) => {
+              if (error) {
+                console.log(error)
+              } else {
+                console.log(body)
+              }
+            }
+          )
         res.send(updatedOrder)
       } else {
         res.status(404).send({ message: 'Order Not Found', method: 'PUT' })
@@ -107,7 +180,7 @@ router.put(
 router.delete(
   '/:id',
   isAuth,
-  isAdmin,
+  isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
     if (order) {

@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Route } from "react-router-dom";
 import { carritoItems } from "../../layers/Carrito/features/CarritoSlice";
-import MessageBox from "../../layers/Carrito/features/MessageBox";
+import MessageBox from "../components/MessageBox";
 import {
   categoriesError,
   categoriesState,
   categoriesStatus,
   listCategories,
+  productState,
   resetCategories,
   resetProductState,
 } from "../../layers/Home/features/ProductSlice";
-import SearchBox from "../../layers/Home/features/SearchBox";
-import LoadingBox from "../../layers/PlaceOrder/features/LoadingBox";
-import Name from "../../layers/SignIn/features/Name";
+import SearchBox from "../components/SearchBox";
+import LoadingBox from "../components/LoadingBox";
+import Name from "../components/Name";
 import { userState } from "../../layers/SignIn/features/SignInSlice";
 
 import "./NavBar.css";
@@ -24,6 +25,7 @@ export function Navbar() {
   const error = useSelector(categoriesError);
   const categories = useSelector(categoriesState);
   const status = useSelector(categoriesStatus);
+  const products = useSelector(productState)
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
 
@@ -34,7 +36,7 @@ export function Navbar() {
     return () => {
       dispatch(resetCategories());
     };
-  }, [dispatch]);
+  }, [dispatch, products]);
 
   const handleClick = () => {
     dispatch(resetProductState());
@@ -102,7 +104,7 @@ export function Navbar() {
                   <ul className="dropdown-content">
                     <li>
                       <Link to="/dashboard" className="link">
-                        Tablero
+                        Dashboard
                       </Link>
                     </li>
                     <li>

@@ -43,7 +43,7 @@ export const fetchUser = createAsyncThunk(
     const headers = userId
       ? {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${body.token}`,
+          Authorization: `Bearer ${body?.token}`,
         }
       : { "Content-Type": "application/json" };
     const main = userId
@@ -83,7 +83,7 @@ export const modifyUsers = createAsyncThunk(
     const method = deleteId ? "DELETE" : "PUT";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
     const main = deleteId ? {} : { name, email, isSeller, isAdmin };
 
@@ -112,13 +112,12 @@ export const getUsers = createAsyncThunk(
     } = getState();
 
     const { userId, topSellers } = params;
-    const token = body && body.token;
 
     const requestOptions = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${body?.token}`,
       },
     };
 
@@ -152,7 +151,7 @@ export const createReviewSeller = createAsyncThunk(
     const method = "POST";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
 
     const requestOptions = {

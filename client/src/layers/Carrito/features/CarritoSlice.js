@@ -20,6 +20,7 @@ const initialState = {
     type: null,
     text: "",
   },
+  address: null
 };
 
 export const uploadImage = createAsyncThunk(
@@ -34,7 +35,7 @@ export const uploadImage = createAsyncThunk(
     const requestOptions = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${body.token}`,
+        Authorization: `Bearer ${body?.token}`,
       },
       body: bodyFormData,
     };
@@ -121,6 +122,9 @@ const carritoSlice = createSlice({
     setMessage(state, action) {
       state.message = action.payload;
     },
+    saveAdress(state, action) {
+      state.address = action.payload
+    }
   },
   extraReducers: {
     [uploadImage.pending]: (state, action) => {
@@ -157,6 +161,8 @@ export const paymentMethodState = (state) => state.carrito.paymentMethod;
 
 export const messageState = (state) => state.carrito.message;
 
+export const addressState = (state) => state.carrito.address
+
 export const {
   carritoUpdated,
   deleteItem,
@@ -166,6 +172,7 @@ export const {
   restoreUpload,
   resetMessage,
   setMessage,
+  saveAdress
 } = carritoSlice.actions;
 
 export default carritoSlice.reducer;

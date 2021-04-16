@@ -15,13 +15,15 @@ const initialState = {
   categoriesError: null,
   review: null,
   reviewStatus: 'idle',
-  reviewError: null
+  reviewError: null,
+  pages: 0,
+  page: 0
 };
 
 export const fetchProducts = createAsyncThunk(
   "product/fetchProducts",
   async (params) => {
-    const { seller, name, category, order, min, max, rating } = params;
+    const { seller, name, category, order, min, max, rating, pageNumber } = params;
     const minQuery = min ? `min=${min}` : "min=0";
     const sellerQuery = seller ? `&seller=${seller}` : "";
     const nameQuery = name ? `&name=${name}` : "";
@@ -29,7 +31,8 @@ export const fetchProducts = createAsyncThunk(
     const orderQuery = order ? `&order=${order}` : "";
     const maxQuery = max ? `&max=${max}` : "";
     const ratingQuery = rating ? `&rating=${rating}` : "";
-    let url = `/api/products?${minQuery}${sellerQuery}${nameQuery}${categoryQuery}${orderQuery}${maxQuery}${ratingQuery}`;
+    const pageNumberQuery = pageNumber ? `&pageNumber=${pageNumber}` : "";
+    let url = `/api/products?${minQuery}${sellerQuery}${nameQuery}${categoryQuery}${orderQuery}${maxQuery}${ratingQuery}${pageNumberQuery}`;
     const response = await fetch(url);
     const data = await response.json();
     if (!response.ok) throw data.error;
@@ -59,7 +62,7 @@ export const createProduct = createAsyncThunk(
     const method = _id ? "PUT" : "POST";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
     const main = _id
       ? { name, price, image, category, brand, countInStock, description }
@@ -95,7 +98,7 @@ export const deleteProduct = createAsyncThunk(
     const method = "DELETE";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
 
     const requestOptions = {
@@ -139,7 +142,7 @@ export const createReviewProduct = createAsyncThunk(
     const method = "POST";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
 
     const requestOptions = {
@@ -177,6 +180,8 @@ const productSlice = createSlice({
       state.status = "idle";
       state.error = null;
       state.body = [];
+      state.pages = 0;
+      state.page = 0;
     },
     resetCategories(state, action) {
       state.categoriesStatus = "idle";
@@ -196,7 +201,9 @@ const productSlice = createSlice({
     [fetchProducts.fulfilled]: (state, action) => {
       state.status = "succeeded";
       // Add any fetched posts to the array
-      state.body = action.payload;
+      state.body = action.payload.products;
+      state.pages = action.payload.pages;
+      state.page = action.payload.page;
     },
     [fetchProducts.rejected]: (state, action) => {
       state.status = "failed";
@@ -285,6 +292,10 @@ export const productReview = (state) => state.product.review;
 export const productReviewStatus = (state) => state.product.reviewStatus;
 
 export const productReviewError = (state) => state.product.reviewError;
+
+export const pagesState = (state) => state.product.pages;
+
+export const pageState = (state) => state.product.page;
 
 export const {
   resetCreatedProduct,

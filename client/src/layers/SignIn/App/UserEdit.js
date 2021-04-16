@@ -1,8 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import MessageBox from "../../Carrito/features/MessageBox";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import MessageBox from "../../../app/components/MessageBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import {
   getUsers,
   modifiedUsersError,

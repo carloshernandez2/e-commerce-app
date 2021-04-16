@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./CheckoutSteps.css";
+import "./css/CheckoutSteps.css";
 
 export default function CheckoutSteps(props) {
   return (

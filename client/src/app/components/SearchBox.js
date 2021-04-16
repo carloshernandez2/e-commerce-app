@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import "./SearchBox.css";
+import "./css/SearchBox.css";
 
 export default function SearchBox(props) {
   const [name, setName] = useState("");

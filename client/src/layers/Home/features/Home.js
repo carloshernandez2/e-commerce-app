@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import "./Home.css";
-import Rating from "./Rating";
+import Rating from "../../../app/components/Rating";
 
 function Home(props) {
   const { product } = props;

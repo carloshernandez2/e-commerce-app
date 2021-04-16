@@ -5,7 +5,7 @@ import {
   metodoPago,
   paymentMethodState,
 } from "../features/CarritoSlice";
-import CheckoutSteps from "../features/CheckoutSteps";
+import CheckoutSteps from "../../../app/components/CheckoutSteps";
 
 export default function Pago(props) {
   const compra = useSelector(compraState);

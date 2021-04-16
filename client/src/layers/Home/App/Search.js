@@ -6,16 +6,19 @@ import {
   categoriesState,
   categoriesStatus,
   fetchProducts,
+  pagesState,
+  pageState,
   productError,
   productState,
   productStatus,
   resetProductState,
 } from "../features/ProductSlice";
-import MessageBox from "../../Carrito/features/MessageBox";
-import LoadingBox from "../../PlaceOrder/features/LoadingBox";
+import MessageBox from "../../../app/components/MessageBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import Home from "../features/Home";
-import Rating from "../features/Rating";
+import Rating from "../../../app/components/Rating";
 import { prices, ratings } from "../features/utils";
+import Pagination from "../../../app/components/Pagination";
 
 export default function Search(props) {
   const {
@@ -25,6 +28,7 @@ export default function Search(props) {
     max = 0,
     rating = 0,
     order = "newest",
+    pageNumber = 1,
   } = useParams();
 
   const dispatch = useDispatch();
@@ -35,10 +39,13 @@ export default function Search(props) {
   const errorCategories = useSelector(categoriesError);
   const categories = useSelector(categoriesState);
   const statusCategories = useSelector(categoriesStatus);
+  const pages = useSelector(pagesState);
+  const page = useSelector(pageState);
 
   useEffect(() => {
     dispatch(
       fetchProducts({
+        pageNumber,
         name: name !== "all" ? name : "",
         category: category !== "all" ? category : "",
         min,
@@ -48,16 +55,17 @@ export default function Search(props) {
       })
     );
     return () => dispatch(resetProductState());
-  }, [category, dispatch, max, min, name, order, rating]);
+  }, [category, dispatch, max, min, name, order, pageNumber, rating]);
 
   const getFilterUrl = (filter) => {
+    const filterPage = filter.page || 1;
     const filterCategory = filter.category || category;
     const filterName = filter.name || name;
-    const filterRating = filter.rating || rating;
+    const filterRating = filter.rating === 0 ? 0 : filter.rating || rating;
     const sortOrder = filter.order || order;
     const filterMin = filter.min ? filter.min : filter.min === 0 ? 0 : min;
     const filterMax = filter.max ? filter.max : filter.max === 0 ? 0 : max;
-    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}`;
+    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}/pageNumber/${filterPage}`;
   };
 
   return (
@@ -70,7 +78,7 @@ export default function Search(props) {
         ) : (
           <div className="contenido-producto">
             <div>
-              Sort by{" "}
+              Ordenar por{" "}
               <select
                 value={order}
                 onChange={(e) => {
@@ -92,7 +100,7 @@ export default function Search(props) {
                     className={"all" === category ? "active link" : "link"}
                     to={getFilterUrl({ category: "all" })}
                   >
-                    Any
+                    Todos
                   </Link>
                 </li>
                 {categories.map((c) => (
@@ -107,7 +115,7 @@ export default function Search(props) {
                 ))}
               </ul>
               <div>
-                <h3>Price</h3>
+                <h3>Precio</h3>
                 <ul>
                   {prices.map((p) => (
                     <li key={p.name}>
@@ -126,7 +134,7 @@ export default function Search(props) {
                 </ul>
               </div>
               <div>
-                <h3>Avg. Customer Review</h3>
+                <h3>Calificación promedio</h3>
                 <ul>
                   {ratings.map((r) => (
                     <li key={r.name}>
@@ -136,7 +144,7 @@ export default function Search(props) {
                           `${r.rating}` === `${rating}` ? "active link" : "link"
                         }
                       >
-                        <Rating caption={" & up"} rating={r.rating} />
+                        <Rating caption={" & mas"} rating={r.rating} />
                       </Link>
                     </li>
                   ))}
@@ -146,9 +154,13 @@ export default function Search(props) {
           </div>
         )}
         {status === "idle" ? null : status === "loading" ? (
-          <div className="extrafoco"><LoadingBox variant="big" /></div>
+          <div className="extrafoco">
+            <LoadingBox variant="big" />
+          </div>
         ) : status === "failed" ? (
-          <div className="extrafoco"><MessageBox variant="danger">{error.message}</MessageBox></div>
+          <div className="extrafoco">
+            <MessageBox variant="danger">{error.message}</MessageBox>
+          </div>
         ) : (
           <div className="extrafoco">
             {products.length === 0 && (
@@ -159,6 +171,7 @@ export default function Search(props) {
                 <Home key={product._id} product={product}></Home>
               ))}
             </div>
+            <Pagination pages={pages} page={page} getFilterUrl={getFilterUrl} />
           </div>
         )}
       </div>

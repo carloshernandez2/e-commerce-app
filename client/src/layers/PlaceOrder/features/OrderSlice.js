@@ -10,6 +10,9 @@ const initialState = {
   modifiedOrder: [],
   modifiedStatus: "idle",
   modifiedError: null,
+  summary: null,
+  summaryStatus: 'idle',
+  summaryError: null
 };
 
 export const fetchOrder = createAsyncThunk(
@@ -37,7 +40,7 @@ export const fetchOrder = createAsyncThunk(
       method: method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${body.token}`,
+        Authorization: `Bearer ${body?.token}`,
       },
       body: cuerpo,
     };
@@ -69,7 +72,7 @@ export const listOrderMine = createAsyncThunk(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${body.token}`,
+        Authorization: `Bearer ${body?.token}`,
       },
     };
 
@@ -102,13 +105,43 @@ export const deleteUpdateOrder = createAsyncThunk(
     const method = deleteId ? "DELETE" : "PUT";
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${body.token}`,
+      Authorization: `Bearer ${body?.token}`,
     };
 
     const requestOptions = {
       method,
       headers,
       body: JSON.stringify({}),
+    };
+
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+    if (!response.ok) {
+      const error = new Error(data.message);
+      error.name = response.status + "";
+      throw error;
+    }
+    return data;
+  }
+);
+
+export const summaryOrder = createAsyncThunk(
+  "order/summaryOrder",
+  async (params, { getState }) => {
+    const {
+      user: { body },
+    } = getState();
+
+    const url = '/api/orders/summary';
+    const method = 'GET';
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${body?.token}`,
+    };
+
+    const requestOptions = {
+      method,
+      headers
     };
 
     const response = await fetch(url, requestOptions);
@@ -140,6 +173,11 @@ const orderSlice = createSlice({
       state.modifiedOrder = [];
       state.modifiedStatus = "idle";
       state.modifiedStatus = null;
+    },
+    resetSummary(state, action) {
+      state.summary = null
+      state.summaryStatus = 'idle'
+      state.summaryError = null
     },
   },
   extraReducers: {
@@ -184,6 +222,18 @@ const orderSlice = createSlice({
       state.modifiedStatus = "failed";
       state.modifiedError = action.error;
     },
+    [summaryOrder.pending]: (state, action) => {
+      state.summaryStatus = 'loading'
+    },
+    [summaryOrder.fulfilled]: (state, action) => {
+      state.summaryStatus = 'succeeded'
+      // Add any fetched posts to the array
+      state.summary = action.payload;
+    },
+    [summaryOrder.rejected]: (state, action) => {
+      state.summaryStatus = "failed"
+      state.summaryError = action.error;
+    },
   },
 });
 
@@ -193,11 +243,15 @@ export const ordersState = (state) => state.order.orders;
 
 export const modifiedOrder = (state) => state.order.modifiedOrder;
 
+export const summaryState = (state) => state.order.summary;
+
 export const orderStatus = (state) => state.order.status;
 
 export const ordersStatus = (state) => state.order.ordersStatus;
 
 export const modifiedStatus = (state) => state.order.modifiedStatus;
+
+export const summaryStatus = (state) => state.order.summaryStatus;
 
 export const orderError = (state) => state.order.error;
 
@@ -205,9 +259,11 @@ export const ordersError = (state) => state.order.ordersError;
 
 export const modifiedError = (state) => state.order.modifiedError;
 
+export const summaryError = (state) => state.order.summaryError;
+
 export const singleOrderState = (state, id) =>
   state.order.body.find((product) => product._id === id);
 
-export const { resetOrder, resetOrders, resetModified } = orderSlice.actions;
+export const { resetOrder, resetOrders, resetModified, resetSummary } = orderSlice.actions;
 
 export default orderSlice.reducer;

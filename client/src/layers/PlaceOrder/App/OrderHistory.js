@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import MessageBox from "../../Carrito/features/MessageBox";
+import MessageBox from "../../../app/components/MessageBox";
 import { userState } from "../../SignIn/features/SignInSlice";
-import LoadingBox from "../features/LoadingBox";
+import LoadingBox from "../../../app/components/LoadingBox";
 import {
   listOrderMine,
   ordersError,
