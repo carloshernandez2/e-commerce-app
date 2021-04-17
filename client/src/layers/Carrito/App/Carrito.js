@@ -95,6 +95,8 @@ export default function Carrito(props) {
                           ? dispatch(
                               carritoUpdated(item, Number(e.target.value))
                             )
+                          : e.target.value === ""
+                          ? setTimeout(() => e.target.select(), 100)
                           : setError({ ...error, [item.product]: true })
                       }
                       max={item.countInStock}
