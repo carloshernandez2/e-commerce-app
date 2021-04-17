@@ -29,7 +29,7 @@
 
 .App-footer.container {
   grid-area: App-footer;
-  justify-content: center;
+  justify-content: space-around;
   min-height: 50px;
   background-color: yellow;
 }

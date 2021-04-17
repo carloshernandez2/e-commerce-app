@@ -25,6 +25,7 @@ import Seller from "./layers/SignIn/App/Seller";
 import Search from "./layers/Home/App/Search";
 import MapScreen from "./layers/Carrito/App/Map";
 import Dashboard from "./layers/PlaceOrder/App/Dashboard";
+import Footer from "./app/footer/Footer";
 
 function App() {
   return (
@@ -69,7 +70,7 @@ function App() {
           </Switch>
         </main>
         <footer className="App-footer container">
-          <p>Todos los derechos reservados</p>
+          <Footer />
         </footer>
       </div>
     </BrowserRouter>
